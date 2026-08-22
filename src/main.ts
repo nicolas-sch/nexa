@@ -26,13 +26,21 @@ app.innerHTML = `
 
   <section id="page-home" class="page">
     <div id="search-row">
-      <input
-        id="search-input"
-        type="search"
-        placeholder="Buscar por cidade, estado, rua ou nome..."
-        autocomplete="off"
-      />
+      <div id="search-box">
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Buscar por cidade, estado, rua ou nome..."
+          autocomplete="off"
+        />
+        <button id="search-btn" type="button" aria-label="Buscar">🔍</button>
+        <ul id="search-suggestions" hidden></ul>
+      </div>
       <button id="locate-btn" type="button">📍 Usar minha localização</button>
+    </div>
+    <div id="active-search" hidden>
+      <span>Buscando por: <strong id="active-search-term"></strong></span>
+      <button id="clear-search-btn" type="button" aria-label="Limpar busca">✕</button>
     </div>
     <p id="locate-status"></p>
 
@@ -137,7 +145,15 @@ const pages: Record<string, HTMLElement> = {
 const contactForm = document.querySelector<HTMLFormElement>("#contact-form")!;
 
 const searchInput = document.querySelector<HTMLInputElement>("#search-input")!;
+const searchBtn = document.querySelector<HTMLButtonElement>("#search-btn")!;
+const searchSuggestions =
+  document.querySelector<HTMLUListElement>("#search-suggestions")!;
 const locateBtn = document.querySelector<HTMLButtonElement>("#locate-btn")!;
+const activeSearch = document.querySelector<HTMLDivElement>("#active-search")!;
+const activeSearchTerm =
+  document.querySelector<HTMLElement>("#active-search-term")!;
+const clearSearchBtn =
+  document.querySelector<HTMLButtonElement>("#clear-search-btn")!;
 const locateStatus =
   document.querySelector<HTMLParagraphElement>("#locate-status")!;
 const results = document.querySelector<HTMLElement>("#results")!;
@@ -325,10 +341,99 @@ pagination.addEventListener("click", (event) => {
   results.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-searchInput.addEventListener("input", () => {
+function escapeAttr(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+function hideSuggestions() {
+  searchSuggestions.hidden = true;
+  searchSuggestions.innerHTML = "";
+}
+
+function updateSuggestions() {
+  const query = searchInput.value.trim();
+  if (!query) {
+    hideSuggestions();
+    return;
+  }
+
+  const matches = salons.filter((s) => matchesSearch(s, query)).slice(0, 6);
+  if (!matches.length) {
+    hideSuggestions();
+    return;
+  }
+
+  searchSuggestions.innerHTML = matches
+    .map(
+      (s) => `
+        <li data-value="${escapeAttr(s.name)}">
+          <span class="suggestion-name">${s.name}</span>
+          <span class="suggestion-place">${s.city}/${s.state}</span>
+        </li>
+      `,
+    )
+    .join("");
+  searchSuggestions.hidden = false;
+}
+
+function updateActiveSearchChip() {
+  if (searchTerm) {
+    activeSearchTerm.textContent = searchTerm;
+    activeSearch.hidden = false;
+  } else {
+    activeSearch.hidden = true;
+  }
+}
+
+function commitSearch() {
   searchTerm = searchInput.value;
   currentPage = 1;
+  hideSuggestions();
+  updateActiveSearchChip();
   render();
+}
+
+clearSearchBtn.addEventListener("click", () => {
+  searchTerm = "";
+  searchInput.value = "";
+  currentPage = 1;
+  updateActiveSearchChip();
+  render();
+});
+
+searchInput.addEventListener("input", updateSuggestions);
+
+searchInput.addEventListener("focus", () => {
+  if (searchInput.value.trim()) updateSuggestions();
+});
+
+searchInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    commitSearch();
+  }
+});
+
+searchBtn.addEventListener("click", commitSearch);
+
+searchSuggestions.addEventListener("click", (event) => {
+  const item = (event.target as HTMLElement).closest<HTMLLIElement>(
+    "li[data-value]",
+  );
+  if (!item) return;
+  searchInput.value = item.dataset.value ?? "";
+  commitSearch();
+});
+
+document.addEventListener("click", (event) => {
+  const target = event.target as Node;
+  if (
+    !searchInput.contains(target) &&
+    !searchSuggestions.contains(target) &&
+    target !== searchBtn
+  ) {
+    hideSuggestions();
+  }
 });
 
 ratingFilter.addEventListener("change", () => {
