@@ -2,14 +2,27 @@ import "./style.css";
 import { salons } from "./data";
 import type { Salon } from "./types";
 import { distanceKm, formatDistance } from "./geo";
-import { initMap, updateMapSalons, setUserLocation } from "./map";
+import { initMap, updateMapSalons, setUserLocation, invalidateMapSize } from "./map";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
 app.innerHTML = `
   <header id="topbar">
-    <h1>Nexa</h1>
-    <p class="subtitle">Onde a beleza encontra conexão</p>
+    <button id="menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-menu">
+      <span></span><span></span><span></span>
+    </button>
+    <div id="header-titles">
+      <h1>Nexa</h1>
+      <p class="subtitle">Onde a beleza encontra conexão</p>
+    </div>
+    <nav id="nav-menu">
+      <a href="#/" data-route="/">Início</a>
+      <a href="#/quem-somos" data-route="/quem-somos">Quem Somos</a>
+      <a href="#/contato" data-route="/contato">Contato</a>
+    </nav>
+  </header>
+
+  <section id="page-home" class="page">
     <div id="search-row">
       <input
         id="search-input"
@@ -20,37 +33,79 @@ app.innerHTML = `
       <button id="locate-btn" type="button">📍 Usar minha localização</button>
     </div>
     <p id="locate-status"></p>
-  </header>
 
-  <div id="map"></div>
+    <div id="map"></div>
 
-  <div id="filters-row">
-    <label class="filter-field">
-      Avaliação
-      <select id="rating-filter">
-        <option value="0">Qualquer</option>
-        <option value="5">5 estrelas</option>
-        <option value="4.5">4,5+ estrelas</option>
-        <option value="4">4+ estrelas</option>
-        <option value="3.5">3,5+ estrelas</option>
-        <option value="3">3+ estrelas</option>
-      </select>
-    </label>
-    <label class="filter-field">
-      Serviço
-      <select id="service-filter">
-        <option value="">Todos</option>
-        <option value="Escova">Escova</option>
-        <option value="Coloração">Coloração</option>
-        <option value="Unhas">Unhas</option>
-        <option value="Depilação">Depilação</option>
-        <option value="Corte">Corte</option>
-      </select>
-    </label>
-  </div>
+    <div id="filters-row">
+      <label class="filter-field">
+        Avaliação
+        <select id="rating-filter">
+          <option value="0">Qualquer</option>
+          <option value="5">5 estrelas</option>
+          <option value="4.5">4,5+ estrelas</option>
+          <option value="4">4+ estrelas</option>
+          <option value="3.5">3,5+ estrelas</option>
+          <option value="3">3+ estrelas</option>
+        </select>
+      </label>
+      <label class="filter-field">
+        Serviço
+        <select id="service-filter">
+          <option value="">Todos</option>
+          <option value="Escova">Escova</option>
+          <option value="Coloração">Coloração</option>
+          <option value="Unhas">Unhas</option>
+          <option value="Depilação">Depilação</option>
+          <option value="Corte">Corte</option>
+        </select>
+      </label>
+    </div>
 
-  <main id="results"></main>
+    <main id="results"></main>
+  </section>
+
+  <section id="page-about" class="page">
+    <h2>Quem Somos</h2>
+    <p>
+      O Nexa nasceu para aproximar quem busca cuidado e beleza dos melhores salões do Brasil.
+      Reunimos informações de endereço, avaliações e serviços em um só lugar, para que você
+      encontre o salão ideal perto de você em poucos cliques.
+    </p>
+    <p>
+      Nosso objetivo é valorizar profissionais da beleza, dando visibilidade a salões de todos
+      os tamanhos e regiões, com uma experiência simples, elegante e direta.
+    </p>
+  </section>
+
+  <section id="page-contact" class="page">
+    <h2>Contato</h2>
+    <p>Tem alguma dúvida, sugestão ou quer cadastrar seu salão? Fale com a gente.</p>
+    <form id="contact-form">
+      <label class="form-field">
+        Nome
+        <input id="contact-name" type="text" name="name" required autocomplete="name" />
+      </label>
+      <label class="form-field">
+        E-mail
+        <input id="contact-email" type="email" name="email" required autocomplete="email" />
+      </label>
+      <label class="form-field">
+        Mensagem
+        <textarea id="contact-message" name="message" rows="5" required></textarea>
+      </label>
+      <button type="submit" class="btn btn-whatsapp">Enviar</button>
+    </form>
+  </section>
 `;
+
+const menuBtn = document.querySelector<HTMLButtonElement>("#menu-btn")!;
+const navMenu = document.querySelector<HTMLElement>("#nav-menu")!;
+const pages: Record<string, HTMLElement> = {
+  "/": document.querySelector<HTMLElement>("#page-home")!,
+  "/quem-somos": document.querySelector<HTMLElement>("#page-about")!,
+  "/contato": document.querySelector<HTMLElement>("#page-contact")!,
+};
+const contactForm = document.querySelector<HTMLFormElement>("#contact-form")!;
 
 const searchInput = document.querySelector<HTMLInputElement>("#search-input")!;
 const locateBtn = document.querySelector<HTMLButtonElement>("#locate-btn")!;
@@ -64,6 +119,53 @@ const serviceFilter =
   document.querySelector<HTMLSelectElement>("#service-filter")!;
 
 initMap(mapContainer);
+
+function closeMenu() {
+  navMenu.classList.remove("open");
+  menuBtn.setAttribute("aria-expanded", "false");
+}
+
+function currentRoute(): string {
+  const hash = window.location.hash.replace(/^#/, "") || "/";
+  return hash in pages ? hash : "/";
+}
+
+function showRoute() {
+  const route = currentRoute();
+
+  for (const [path, section] of Object.entries(pages)) {
+    section.hidden = path !== route;
+  }
+
+  document.querySelectorAll<HTMLAnchorElement>("#nav-menu a").forEach((link) => {
+    link.classList.toggle("active", link.dataset.route === route);
+  });
+
+  if (route === "/") {
+    invalidateMapSize();
+  }
+
+  closeMenu();
+}
+
+menuBtn.addEventListener("click", (event) => {
+  event.stopPropagation();
+  const isOpen = navMenu.classList.toggle("open");
+  menuBtn.setAttribute("aria-expanded", String(isOpen));
+});
+
+document.addEventListener("click", (event) => {
+  if (!navMenu.contains(event.target as Node) && event.target !== menuBtn) {
+    closeMenu();
+  }
+});
+
+window.addEventListener("hashchange", showRoute);
+showRoute();
+
+contactForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+});
 
 let userLocation: { lat: number; lng: number } | null = null;
 let searchTerm = "";

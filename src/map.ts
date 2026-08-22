@@ -50,6 +50,10 @@ export function updateMapSalons(salons: Salon[]): void {
   }
 }
 
+export function invalidateMapSize(): void {
+  map.invalidateSize()
+}
+
 export function setUserLocation(lat: number, lng: number): void {
   if (userMarker) {
     userMarker.setLatLng([lat, lng])

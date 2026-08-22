@@ -53,8 +53,16 @@ h2 {
 }
 
 #topbar {
-  text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 32px;
+}
+
+#header-titles {
+  flex: 1;
+  text-align: center;
 }
 
 #topbar h1 {
@@ -63,7 +71,142 @@ h2 {
 }
 
 .subtitle {
-  margin: 8px 0 24px;
+  margin: 8px 0 0;
+}
+
+#menu-btn {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  cursor: pointer;
+}
+
+#menu-btn span {
+  display: block;
+  height: 2px;
+  margin-inline: 10px;
+  background: var(--accent);
+  border-radius: 1px;
+  transition: background-color 0.2s;
+}
+
+#menu-btn:hover span {
+  background: var(--accent-light);
+}
+
+#nav-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 0.15s,
+    transform 0.15s,
+    visibility 0.15s;
+}
+
+#nav-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+#nav-menu a {
+  padding: 10px 12px;
+  border-radius: 6px;
+  color: var(--text-h);
+  text-decoration: none;
+  font-size: 15px;
+}
+
+#nav-menu a:hover {
+  background: var(--accent-bg);
+  color: var(--accent-light);
+}
+
+#nav-menu a.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.page[hidden] {
+  display: none;
+}
+
+#page-about,
+#page-contact {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+#page-about p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+
+#page-about h2,
+#page-contact h2 {
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+#page-contact > p {
+  margin: 0 0 24px;
+}
+
+#contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.form-field input,
+.form-field textarea {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-h);
+  font: inherit;
+  resize: vertical;
+}
+
+.form-field input:focus-visible,
+.form-field textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+#contact-form button {
+  align-self: flex-start;
+  padding: 12px 24px;
 }
 
 #search-row {
