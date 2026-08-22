@@ -3,6 +3,8 @@ import { salons } from "./data";
 import type { Salon } from "./types";
 import { distanceKm, formatDistance } from "./geo";
 import { initMap, updateMapSalons, setUserLocation, invalidateMapSize } from "./map";
+import searchIcon from "@material-design-icons/svg/filled/search.svg?raw";
+import myLocationIcon from "@material-design-icons/svg/filled/my_location.svg?raw";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -33,10 +35,10 @@ app.innerHTML = `
           placeholder="Buscar por cidade, estado, rua ou nome..."
           autocomplete="off"
         />
-        <button id="search-btn" type="button" aria-label="Buscar">🔍</button>
+        <button id="search-btn" type="button" aria-label="Buscar">${searchIcon}</button>
         <ul id="search-suggestions" hidden></ul>
       </div>
-      <button id="locate-btn" type="button">📍 Usar minha localização</button>
+      <button id="locate-btn" type="button">${myLocationIcon} Usar minha localização</button>
     </div>
     <div id="active-search" hidden>
       <span>Buscando por: <strong id="active-search-term"></strong></span>

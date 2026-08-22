@@ -15,6 +15,7 @@
     "vite": "^8.2.0"
   },
   "dependencies": {
+    "@material-design-icons/svg": "^0.14.15",
     "leaflet": "^1.9.4"
   }
 }

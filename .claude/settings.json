@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node test-chip.mjs)"
+      "Bash(node test-chip.mjs)",
+      "Bash(npx --yes playwright screenshot --browser=chromium --wait-for-timeout=1000 http://localhost:5174 material-icons.png)",
+      "Bash(npx --yes playwright screenshot --browser=chromium --wait-for-timeout=1000 http://localhost:5174 icon-align-fix.png)"
     ]
   }
 }
