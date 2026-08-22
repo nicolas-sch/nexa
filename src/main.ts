@@ -5,6 +5,8 @@ import { distanceKm, formatDistance } from "./geo";
 import { initMap, updateMapSalons, setUserLocation, invalidateMapSize } from "./map";
 import searchIcon from "@material-design-icons/svg/filled/search.svg?raw";
 import myLocationIcon from "@material-design-icons/svg/filled/my_location.svg?raw";
+import chevronLeftIcon from "@material-design-icons/svg/filled/chevron_left.svg?raw";
+import chevronRightIcon from "@material-design-icons/svg/filled/chevron_right.svg?raw";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -217,6 +219,12 @@ contactForm.addEventListener("submit", (event) => {
 
 const PAGE_SIZE = 9;
 
+const SERVICE_PHOTOS = [
+  "/servicos/servico1.jpg",
+  "/servicos/servico2.jpg",
+  "/servicos/servico3.jpg",
+];
+
 let userLocation: { lat: number; lng: number } | null = null;
 let searchTerm = "";
 let minRating = 0;
@@ -248,9 +256,25 @@ function renderCard(salon: Salon): string {
         )
       : null;
 
-  const imageBlock = salon.imageUrl
-    ? `<img class="salon-image" src="${salon.imageUrl}" alt="${salon.name}" />`
-    : `<div class="salon-image salon-image-placeholder" aria-hidden="true">📷</div>`;
+  const images = salon.imageUrl
+    ? [salon.imageUrl, ...SERVICE_PHOTOS]
+    : SERVICE_PHOTOS;
+
+  const galleryNav =
+    images.length > 1
+      ? `
+        <button type="button" class="gallery-nav gallery-prev" aria-label="Foto anterior">${chevronLeftIcon}</button>
+        <button type="button" class="gallery-nav gallery-next" aria-label="Próxima foto">${chevronRightIcon}</button>
+        <span class="gallery-counter">1/${images.length}</span>
+      `
+      : "";
+
+  const imageBlock = `
+    <div class="card-gallery" data-index="0" data-images="${escapeAttr(JSON.stringify(images))}">
+      <img class="salon-image" src="${images[0]}" alt="${salon.name}" />
+      ${galleryNav}
+    </div>
+  `;
 
   return `
     <article class="salon-card">
@@ -341,6 +365,29 @@ pagination.addEventListener("click", (event) => {
   currentPage = Number(target.dataset.page);
   render();
   results.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+results.addEventListener("click", (event) => {
+  const btn = (event.target as HTMLElement).closest<HTMLButtonElement>(
+    ".gallery-nav",
+  );
+  if (!btn) return;
+
+  const gallery = btn.closest<HTMLElement>(".card-gallery")!;
+  const images: string[] = JSON.parse(gallery.dataset.images ?? "[]");
+  const total = images.length;
+  if (!total) return;
+
+  const index = Number(gallery.dataset.index ?? "0");
+  const nextIndex = btn.classList.contains("gallery-next")
+    ? (index + 1) % total
+    : (index - 1 + total) % total;
+
+  gallery.dataset.index = String(nextIndex);
+  gallery.querySelector<HTMLImageElement>(".salon-image")!.src =
+    images[nextIndex];
+  gallery.querySelector<HTMLElement>(".gallery-counter")!.textContent =
+    `${nextIndex + 1}/${total}`;
 });
 
 function escapeAttr(value: string): string {

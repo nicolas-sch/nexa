@@ -72,7 +72,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
-  bottom: 4px;
+  bottom: 8px;
   width: 36px;
   display: flex;
   align-items: center;
@@ -86,6 +86,10 @@
   transition:
     background-color 0.2s,
     color 0.2s;
+
+  @media (max-width: 796px) {
+    bottom: 4px;
+  }
 
   &:hover {
     background: var(--accent-border);
