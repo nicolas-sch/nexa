@@ -181,6 +181,10 @@
 
 .btn {
   flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   text-align: center;
   padding: 10px 12px;
   border-radius: 8px;
@@ -195,6 +199,14 @@
   &:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
+  }
+
+  svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
   }
 }
 

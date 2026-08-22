@@ -7,6 +7,8 @@ import searchIcon from "@material-design-icons/svg/filled/search.svg?raw";
 import myLocationIcon from "@material-design-icons/svg/filled/my_location.svg?raw";
 import chevronLeftIcon from "@material-design-icons/svg/filled/chevron_left.svg?raw";
 import chevronRightIcon from "@material-design-icons/svg/filled/chevron_right.svg?raw";
+import whatsappIcon from "simple-icons/icons/whatsapp.svg?raw";
+import instagramIcon from "simple-icons/icons/instagram.svg?raw";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -297,13 +299,13 @@ function renderCard(salon: Salon): string {
           href="https://wa.me/${salon.whatsapp}"
           target="_blank"
           rel="noopener noreferrer"
-        >WhatsApp</a>
+        >${whatsappIcon} WhatsApp</a>
         <a
           class="btn btn-instagram"
           href="https://instagram.com/${salon.instagram}"
           target="_blank"
           rel="noopener noreferrer"
-        >Instagram</a>
+        >${instagramIcon} Instagram</a>
       </div>
     </article>
   `;
