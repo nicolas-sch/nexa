@@ -54,6 +54,14 @@ app.innerHTML = `
 
     <div id="filters-row">
       <label class="filter-field">
+        Ordenar por
+        <select id="sort-filter">
+          <option value="">Padrão</option>
+          <option value="distance">Menor distância</option>
+          <option value="rating">Melhor avaliação</option>
+        </select>
+      </label>
+      <label class="filter-field">
         Avaliação
         <select id="rating-filter">
           <option value="0">Qualquer</option>
@@ -165,6 +173,7 @@ const locateStatus =
 const results = document.querySelector<HTMLElement>("#results")!;
 const pagination = document.querySelector<HTMLElement>("#pagination")!;
 const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
+const sortFilter = document.querySelector<HTMLSelectElement>("#sort-filter")!;
 const ratingFilter =
   document.querySelector<HTMLSelectElement>("#rating-filter")!;
 const serviceFilter =
@@ -231,6 +240,7 @@ let userLocation: { lat: number; lng: number } | null = null;
 let searchTerm = "";
 let minRating = 0;
 let serviceTerm = "";
+let sortBy: "" | "distance" | "rating" = "";
 let currentPage = 1;
 
 function matchesSearch(salon: Salon, term: string): boolean {
@@ -334,7 +344,9 @@ function render() {
       (!serviceTerm || s.services.includes(serviceTerm)),
   );
 
-  if (userLocation) {
+  if (sortBy === "rating") {
+    list = [...list].sort((a, b) => b.rating - a.rating);
+  } else if (sortBy === "distance" && userLocation) {
     const loc = userLocation;
     list = [...list].sort(
       (a, b) =>
@@ -546,7 +558,7 @@ serviceFilter.addEventListener("change", () => {
   render();
 });
 
-locateBtn.addEventListener("click", () => {
+function requestLocation() {
   if (!navigator.geolocation) {
     locateStatus.textContent = "Geolocalização não suportada neste navegador.";
     return;
@@ -565,6 +577,23 @@ locateBtn.addEventListener("click", () => {
       locateStatus.textContent = "Não foi possível obter sua localização.";
     },
   );
+}
+
+locateBtn.addEventListener("click", () => {
+  sortBy = "distance";
+  sortFilter.value = "distance";
+  requestLocation();
+});
+
+sortFilter.addEventListener("change", () => {
+  sortBy = sortFilter.value as "" | "distance" | "rating";
+  currentPage = 1;
+
+  if (sortBy === "distance" && !userLocation) {
+    requestLocation();
+  } else {
+    render();
+  }
 });
 
 render();
