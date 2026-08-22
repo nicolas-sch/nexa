@@ -33,8 +33,13 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
+  overflow-x: hidden;
 }
 
 h1,
@@ -50,6 +55,8 @@ h2 {
   margin: 0 auto;
   min-height: 100svh;
   padding: 32px 20px 48px;
+  display: flex;
+  flex-direction: column;
 }
 
 #topbar {
@@ -167,6 +174,10 @@ h2 {
   font-weight: 600;
 }
 
+.page {
+  flex: 1;
+}
+
 .page[hidden] {
   display: none;
 }
@@ -231,7 +242,7 @@ h2 {
 #search-row {
   display: flex;
   gap: 12px;
-  justify-content: center;
+  justify-content: flex-start;
   flex-wrap: wrap;
 }
 
@@ -608,4 +619,44 @@ h2 {
   text-align: center;
   font-size: 13px;
   color: rgba(11, 11, 11, 0.7);
+}
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.page-btn {
+  min-width: 40px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-h);
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--accent-light);
+}
+
+.page-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

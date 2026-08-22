@@ -64,6 +64,7 @@ app.innerHTML = `
     </div>
 
     <main id="results"></main>
+    <nav id="pagination"></nav>
   </section>
 
   <section id="page-about" class="page">
@@ -140,6 +141,7 @@ const locateBtn = document.querySelector<HTMLButtonElement>("#locate-btn")!;
 const locateStatus =
   document.querySelector<HTMLParagraphElement>("#locate-status")!;
 const results = document.querySelector<HTMLElement>("#results")!;
+const pagination = document.querySelector<HTMLElement>("#pagination")!;
 const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
 const ratingFilter =
   document.querySelector<HTMLSelectElement>("#rating-filter")!;
@@ -195,10 +197,13 @@ contactForm.addEventListener("submit", (event) => {
   event.preventDefault();
 });
 
+const PAGE_SIZE = 9;
+
 let userLocation: { lat: number; lng: number } | null = null;
 let searchTerm = "";
 let minRating = 0;
 let serviceTerm = "";
+let currentPage = 1;
 
 function matchesSearch(salon: Salon, term: string): boolean {
   if (!term) return true;
@@ -262,6 +267,21 @@ function renderCard(salon: Salon): string {
   `;
 }
 
+function renderPagination(totalPages: number): string {
+  if (totalPages <= 1) return "";
+
+  let pageButtons = "";
+  for (let p = 1; p <= totalPages; p++) {
+    pageButtons += `<button type="button" class="page-btn${p === currentPage ? " active" : ""}" data-page="${p}">${p}</button>`;
+  }
+
+  return `
+    <button type="button" class="page-btn page-nav" data-page="${currentPage - 1}" ${currentPage === 1 ? "disabled" : ""}>‹</button>
+    ${pageButtons}
+    <button type="button" class="page-btn page-nav" data-page="${currentPage + 1}" ${currentPage === totalPages ? "disabled" : ""}>›</button>
+  `;
+}
+
 function render() {
   let list = salons.filter(
     (s) =>
@@ -279,25 +299,47 @@ function render() {
     );
   }
 
-  results.innerHTML = list.length
-    ? list.map(renderCard).join("")
+  const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+  currentPage = Math.min(currentPage, totalPages);
+  const pageItems = list.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
+  );
+
+  results.innerHTML = pageItems.length
+    ? pageItems.map(renderCard).join("")
     : `<p class="empty-state">Nenhum salão encontrado.</p>`;
 
+  pagination.innerHTML = renderPagination(totalPages);
   updateMapSalons(list);
 }
 
+pagination.addEventListener("click", (event) => {
+  const target = (event.target as HTMLElement).closest<HTMLButtonElement>(
+    "[data-page]",
+  );
+  if (!target || target.disabled) return;
+
+  currentPage = Number(target.dataset.page);
+  render();
+  results.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
 searchInput.addEventListener("input", () => {
   searchTerm = searchInput.value;
+  currentPage = 1;
   render();
 });
 
 ratingFilter.addEventListener("change", () => {
   minRating = Number(ratingFilter.value);
+  currentPage = 1;
   render();
 });
 
 serviceFilter.addEventListener("change", () => {
   serviceTerm = serviceFilter.value;
+  currentPage = 1;
   render();
 });
 
@@ -313,6 +355,7 @@ locateBtn.addEventListener("click", () => {
       userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       locateStatus.textContent = "Mostrando salões ordenados por proximidade.";
       setUserLocation(userLocation.lat, userLocation.lng);
+      currentPage = 1;
       render();
     },
     () => {
