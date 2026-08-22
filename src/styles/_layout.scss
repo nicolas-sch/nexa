@@ -1,0 +1,36 @@
+#app {
+  max-width: 960px;
+  margin: 0 auto;
+  min-height: 100svh;
+  padding: 32px 20px 48px;
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  flex: 1;
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+#page-about,
+#page-contact {
+  max-width: 640px;
+  margin: 0 auto;
+
+  h2 {
+    font-size: 28px;
+    margin-bottom: 16px;
+  }
+}
+
+#page-about p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+}
+
+#page-contact > p {
+  margin: 0 0 24px;
+}

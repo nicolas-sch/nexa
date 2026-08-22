@@ -1,0 +1,62 @@
+#map {
+  height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.salon-marker-icon span,
+.user-marker-icon span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.salon-marker-icon span {
+  background: var(--accent);
+  border: 2px solid var(--accent-light);
+  box-shadow: 0 0 0 4px rgba(201, 164, 92, 0.25);
+}
+
+.user-marker-icon span {
+  background: var(--text-h);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(245, 241, 232, 0.2);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--card-bg) !important;
+  color: var(--text-h) !important;
+}
+
+.leaflet-popup-content a {
+  color: var(--accent-light) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text) !important;
+}
+
+.leaflet-bar a {
+  background: var(--card-bg) !important;
+  color: var(--text-h) !important;
+  border-bottom-color: var(--border) !important;
+
+  &:hover {
+    background: var(--accent-bg) !important;
+    color: var(--accent-light) !important;
+  }
+}
+
+.leaflet-control-attribution {
+  background: rgba(11, 11, 11, 0.7) !important;
+  color: var(--text) !important;
+
+  a {
+    color: var(--accent) !important;
+  }
+}

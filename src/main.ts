@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 import { salons } from "./data";
 import type { Salon } from "./types";
 import { distanceKm, formatDistance } from "./geo";
