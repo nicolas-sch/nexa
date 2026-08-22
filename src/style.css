@@ -1,0 +1,353 @@
+:root {
+  --bg: #0b0b0b;
+  --card-bg: #171717;
+  --border: #2a2a2a;
+  --accent: #c9a45c;
+  --accent-light: #e2c98a;
+  --accent-bg: rgba(201, 164, 92, 0.12);
+  --accent-border: rgba(201, 164, 92, 0.4);
+  --text-h: #f5f1e8;
+  --text: #a7a39a;
+  --shadow:
+    rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2 {
+  font-family: var(--heading);
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+#app {
+  max-width: 960px;
+  margin: 0 auto;
+  min-height: 100svh;
+  padding: 32px 20px 48px;
+}
+
+#topbar {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+#topbar h1 {
+  font-size: 40px;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  margin: 8px 0 24px;
+}
+
+#search-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#search-input {
+  flex: 1 1 320px;
+  max-width: 420px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 16px;
+}
+
+#search-input:focus-visible,
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+#locate-btn {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+#locate-btn:hover {
+  border-color: var(--accent-border);
+  color: var(--accent-light);
+}
+
+#locate-status {
+  min-height: 24px;
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+
+#map {
+  height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.salon-marker-icon span,
+.user-marker-icon span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.salon-marker-icon span {
+  background: var(--accent);
+  border: 2px solid var(--accent-light);
+  box-shadow: 0 0 0 4px rgba(201, 164, 92, 0.25);
+}
+
+.user-marker-icon span {
+  background: var(--text-h);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(245, 241, 232, 0.2);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--card-bg) !important;
+  color: var(--text-h) !important;
+}
+
+.leaflet-popup-content a {
+  color: var(--accent-light) !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text) !important;
+}
+
+.leaflet-bar a {
+  background: var(--card-bg) !important;
+  color: var(--text-h) !important;
+  border-bottom-color: var(--border) !important;
+}
+
+.leaflet-bar a:hover {
+  background: var(--accent-bg) !important;
+  color: var(--accent-light) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(11, 11, 11, 0.7) !important;
+  color: var(--text) !important;
+}
+
+.leaflet-control-attribution a {
+  color: var(--accent) !important;
+}
+
+#results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.salon-card {
+  min-height: 450px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 20px;
+}
+
+.salon-card > .salon-card-header,
+.salon-card > .salon-rating,
+.salon-card > .salon-address,
+.salon-card > .salon-services,
+.salon-card > .salon-actions {
+  margin-inline: 20px;
+}
+
+.salon-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stars {
+  position: relative;
+  display: inline-block;
+  font-size: 15px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.stars-bg {
+  color: var(--border);
+}
+
+.stars-fg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--accent);
+}
+
+.salon-rating-value {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.salon-services {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  min-height: 64px;
+}
+
+.salon-services li {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.salon-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+  background: var(--border);
+}
+
+.salon-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  color: var(--accent);
+  background: var(--card-bg);
+}
+
+.salon-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.salon-card-header h2 {
+  font-size: 20px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.salon-distance {
+  font-size: 13px;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.salon-address {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  min-height: calc(15px * 1.4 * 2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.salon-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.btn {
+  flex: 1;
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.btn-whatsapp {
+  background: var(--accent);
+  color: var(--bg);
+  border: 1px solid var(--accent);
+}
+
+.btn-whatsapp:hover {
+  background: var(--accent-light);
+  border-color: var(--accent-light);
+}
+
+.btn-instagram {
+  background: transparent;
+  color: var(--accent-light);
+  border: 1px solid var(--accent-border);
+}
+
+.btn-instagram:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-light);
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 32px 0;
+}
