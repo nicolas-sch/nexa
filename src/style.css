@@ -11,8 +11,8 @@
   --shadow:
     rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -54,24 +54,43 @@ h2 {
 
 #topbar {
   position: relative;
+  left: 50%;
+  right: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: -32px;
+  margin-bottom: 32px;
+  background: var(--accent);
+}
+
+#header-inner {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 14px 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 32px;
 }
 
 #header-titles {
   flex: 1;
-  text-align: center;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
 }
 
 #topbar h1 {
   font-size: 40px;
   letter-spacing: -1px;
+  color: var(--bg);
 }
 
 .subtitle {
-  margin: 8px 0 0;
+  margin: 0;
+  color: rgba(11, 11, 11, 0.7);
 }
 
 #menu-btn {
@@ -83,9 +102,9 @@ h2 {
   width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(11, 11, 11, 0.2);
   border-radius: 8px;
-  background: var(--card-bg);
+  background: var(--bg);
   cursor: pointer;
 }
 

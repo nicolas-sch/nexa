@@ -8,18 +8,20 @@ const app = document.querySelector<HTMLDivElement>("#app")!;
 
 app.innerHTML = `
   <header id="topbar">
-    <button id="menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-menu">
-      <span></span><span></span><span></span>
-    </button>
-    <div id="header-titles">
-      <h1>Nexa</h1>
-      <p class="subtitle">Onde a beleza encontra conexão</p>
+    <div id="header-inner">
+      <button id="menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div id="header-titles">
+        <h1>Nexa</h1>
+        <p class="subtitle">Onde a beleza encontra conexão</p>
+      </div>
+      <nav id="nav-menu">
+        <a href="#/" data-route="/">Início</a>
+        <a href="#/quem-somos" data-route="/quem-somos">Quem Somos</a>
+        <a href="#/contato" data-route="/contato">Contato</a>
+      </nav>
     </div>
-    <nav id="nav-menu">
-      <a href="#/" data-route="/">Início</a>
-      <a href="#/quem-somos" data-route="/quem-somos">Quem Somos</a>
-      <a href="#/contato" data-route="/contato">Contato</a>
-    </nav>
   </header>
 
   <section id="page-home" class="page">
