@@ -9,7 +9,7 @@ const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = `
   <header id="topbar">
     <h1>Nexa</h1>
-    <p class="subtitle">Encontre salões de beleza perto de você</p>
+    <p class="subtitle">Onde a beleza encontra conexão</p>
     <div id="search-row">
       <input
         id="search-input"
@@ -24,6 +24,31 @@ app.innerHTML = `
 
   <div id="map"></div>
 
+  <div id="filters-row">
+    <label class="filter-field">
+      Avaliação
+      <select id="rating-filter">
+        <option value="0">Qualquer</option>
+        <option value="5">5 estrelas</option>
+        <option value="4.5">4,5+ estrelas</option>
+        <option value="4">4+ estrelas</option>
+        <option value="3.5">3,5+ estrelas</option>
+        <option value="3">3+ estrelas</option>
+      </select>
+    </label>
+    <label class="filter-field">
+      Serviço
+      <select id="service-filter">
+        <option value="">Todos</option>
+        <option value="Escova">Escova</option>
+        <option value="Coloração">Coloração</option>
+        <option value="Unhas">Unhas</option>
+        <option value="Depilação">Depilação</option>
+        <option value="Corte">Corte</option>
+      </select>
+    </label>
+  </div>
+
   <main id="results"></main>
 `;
 
@@ -33,11 +58,17 @@ const locateStatus =
   document.querySelector<HTMLParagraphElement>("#locate-status")!;
 const results = document.querySelector<HTMLElement>("#results")!;
 const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
+const ratingFilter =
+  document.querySelector<HTMLSelectElement>("#rating-filter")!;
+const serviceFilter =
+  document.querySelector<HTMLSelectElement>("#service-filter")!;
 
 initMap(mapContainer);
 
 let userLocation: { lat: number; lng: number } | null = null;
 let searchTerm = "";
+let minRating = 0;
+let serviceTerm = "";
 
 function matchesSearch(salon: Salon, term: string): boolean {
   if (!term) return true;
@@ -102,7 +133,12 @@ function renderCard(salon: Salon): string {
 }
 
 function render() {
-  let list = salons.filter((s) => matchesSearch(s, searchTerm));
+  let list = salons.filter(
+    (s) =>
+      matchesSearch(s, searchTerm) &&
+      s.rating >= minRating &&
+      (!serviceTerm || s.services.includes(serviceTerm)),
+  );
 
   if (userLocation) {
     const loc = userLocation;
@@ -122,6 +158,16 @@ function render() {
 
 searchInput.addEventListener("input", () => {
   searchTerm = searchInput.value;
+  render();
+});
+
+ratingFilter.addEventListener("change", () => {
+  minRating = Number(ratingFilter.value);
+  render();
+});
+
+serviceFilter.addEventListener("change", () => {
+  serviceTerm = serviceFilter.value;
   render();
 });
 
