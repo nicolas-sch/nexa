@@ -96,7 +96,33 @@ app.innerHTML = `
       <button type="submit" class="btn btn-whatsapp">Enviar</button>
     </form>
   </section>
+
+  <footer id="site-footer">
+    <div id="footer-inner">
+      <div class="footer-col">
+        <h3>Nexa</h3>
+        <p>Onde a beleza encontra conexão.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navegação</h4>
+        <a href="#/" data-route="/">Início</a>
+        <a href="#/quem-somos" data-route="/quem-somos">Quem Somos</a>
+        <a href="#/contato" data-route="/contato">Contato</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <a href="mailto:contato@nexa.com.br">contato@nexa.com.br</a>
+      </div>
+    </div>
+    <div id="footer-bottom">
+      <p>&copy; <span id="footer-year"></span> Nexa. Todos os direitos reservados.</p>
+    </div>
+  </footer>
 `;
+
+document.querySelector<HTMLSpanElement>("#footer-year")!.textContent = String(
+  new Date().getFullYear(),
+);
 
 const menuBtn = document.querySelector<HTMLButtonElement>("#menu-btn")!;
 const navMenu = document.querySelector<HTMLElement>("#nav-menu")!;
