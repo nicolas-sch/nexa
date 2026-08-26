@@ -171,7 +171,6 @@ export function renderAppShell(): string {
           <input
             id="reg-cep"
             type="text"
-            required
             placeholder="00000-000"
             inputmode="numeric"
             maxlength="9"

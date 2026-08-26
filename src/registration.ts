@@ -94,6 +94,50 @@ export function initRegistrationForm(): void {
     return complement ? `${line} - ${complement}` : line;
   }
 
+  function renderPhotoPreview() {
+    const existingHtml = existingPhotos
+      .map(
+        (url, index) => `
+          <div class="photo-thumb" data-kind="existing" data-index="${index}">
+            <img src="${url}" alt="" />
+            <button type="button" class="photo-remove" aria-label="Remover foto">✕</button>
+          </div>
+        `,
+      )
+      .join("");
+
+    const newHtml = selectedFiles
+      .map(
+        (file, index) => `
+          <div class="photo-thumb" data-kind="new" data-index="${index}">
+            <img src="${URL.createObjectURL(file)}" alt="" />
+            <button type="button" class="photo-remove" aria-label="Remover foto">✕</button>
+          </div>
+        `,
+      )
+      .join("");
+
+    photoPreview.innerHTML = existingHtml + newHtml;
+  }
+
+  photoPreview.addEventListener("click", (event) => {
+    const btn = (event.target as HTMLElement).closest<HTMLButtonElement>(
+      ".photo-remove",
+    );
+    if (!btn) return;
+
+    const thumb = btn.closest<HTMLElement>(".photo-thumb")!;
+    const index = Number(thumb.dataset.index);
+
+    if (thumb.dataset.kind === "existing") {
+      existingPhotos.splice(index, 1);
+    } else {
+      selectedFiles.splice(index, 1);
+    }
+
+    renderPhotoPreview();
+  });
+
   function placeMarker(lat: number, lng: number) {
     mapContainer.hidden = false;
 
@@ -153,10 +197,8 @@ export function initRegistrationForm(): void {
       },
     );
 
-    existingPhotos = salon.photos ?? [];
-    photoPreview.innerHTML = existingPhotos
-      .map((url) => `<img src="${url}" alt="" />`)
-      .join("");
+    existingPhotos = [...(salon.photos ?? [])];
+    renderPhotoPreview();
 
     placeMarker(salon.lat, salon.lng);
 
@@ -294,18 +336,18 @@ export function initRegistrationForm(): void {
   });
 
   photosInput.addEventListener("change", () => {
-    const allFiles = Array.from(photosInput.files ?? []);
-    selectedFiles = allFiles.slice(0, MAX_PHOTOS);
+    const chosenFiles = Array.from(photosInput.files ?? []);
+    const remainingSlots =
+      MAX_PHOTOS - existingPhotos.length - selectedFiles.length;
+    const filesToAdd = chosenFiles.slice(0, Math.max(0, remainingSlots));
 
-    if (selectedFiles.length) {
-      photoPreview.innerHTML = selectedFiles
-        .map((file) => `<img src="${URL.createObjectURL(file)}" alt="" />`)
-        .join("");
-    }
+    selectedFiles = [...selectedFiles, ...filesToAdd];
+    photosInput.value = "";
+    renderPhotoPreview();
 
     statusEl.textContent =
-      allFiles.length > MAX_PHOTOS
-        ? `Só é possível enviar até ${MAX_PHOTOS} fotos. As demais foram ignoradas.`
+      chosenFiles.length > filesToAdd.length
+        ? `Só é possível ter até ${MAX_PHOTOS} fotos no total. Algumas não foram adicionadas.`
         : "";
   });
 
@@ -330,9 +372,10 @@ export function initRegistrationForm(): void {
       const user = await getCurrentUser();
       if (!user) throw new Error("Sua sessão expirou. Entre novamente.");
 
-      const photos = selectedFiles.length
+      const uploadedUrls = selectedFiles.length
         ? await uploadSalonPhotos(selectedFiles)
-        : existingPhotos;
+        : [];
+      const photos = [...existingPhotos, ...uploadedUrls].slice(0, MAX_PHOTOS);
 
       const submission: SalonSubmission = {
         name: nameInput.value.trim(),
@@ -354,12 +397,15 @@ export function initRegistrationForm(): void {
         statusEl.textContent = "Alterações salvas!";
       } else {
         editingSalonId = await insertSalon(user.id, submission);
-        existingPhotos = photos;
         formTitle.textContent = "Editar meu salão";
         submitBtn.textContent = "Salvar alterações";
         statusEl.textContent =
           "Cadastro enviado! Seu salão vai passar por uma análise antes de aparecer no site.";
       }
+
+      existingPhotos = photos;
+      selectedFiles = [];
+      renderPhotoPreview();
     } catch (error) {
       statusEl.textContent =
         error instanceof Error

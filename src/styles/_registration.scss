@@ -77,13 +77,47 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.photo-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
 
   img {
-    width: 80px;
-    height: 80px;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border-radius: 8px;
     border: 1px solid var(--border);
+    display: block;
+  }
+}
+
+.photo-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+
+  &:hover {
+    background: var(--accent);
+    color: var(--bg);
   }
 }
 
