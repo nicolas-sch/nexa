@@ -140,9 +140,30 @@ export function renderAppShell(): string {
         <input id="reg-cnpj" type="text" required placeholder="00.000.000/0000-00" />
       </label>
       <label class="form-field">
-        Rua e número
+        CEP
+        <input
+          id="reg-cep"
+          type="text"
+          required
+          placeholder="00000-000"
+          inputmode="numeric"
+          maxlength="9"
+        />
+      </label>
+      <label class="form-field">
+        Rua
         <input id="reg-street" type="text" required />
       </label>
+      <div class="form-row">
+        <label class="form-field">
+          Número
+          <input id="reg-number" type="text" required />
+        </label>
+        <label class="form-field">
+          Complemento (opcional)
+          <input id="reg-complement" type="text" placeholder="Apto, sala, bloco..." />
+        </label>
+      </div>
       <div class="form-row">
         <label class="form-field">
           Cidade

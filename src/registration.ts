@@ -1,6 +1,7 @@
 import L from "leaflet";
 import type { SalonSubmission } from "./types";
 import { geocodeAddress } from "./geocode";
+import { lookupCep } from "./cep";
 import { signUp } from "./auth";
 import { insertSalon, uploadSalonPhotos } from "./salonsApi";
 
@@ -13,7 +14,11 @@ export function initRegistrationForm(): void {
 
   const nameInput = form.querySelector<HTMLInputElement>("#reg-name")!;
   const cnpjInput = form.querySelector<HTMLInputElement>("#reg-cnpj")!;
+  const cepInput = form.querySelector<HTMLInputElement>("#reg-cep")!;
   const streetInput = form.querySelector<HTMLInputElement>("#reg-street")!;
+  const numberInput = form.querySelector<HTMLInputElement>("#reg-number")!;
+  const complementInput =
+    form.querySelector<HTMLInputElement>("#reg-complement")!;
   const cityInput = form.querySelector<HTMLInputElement>("#reg-city")!;
   const stateInput = form.querySelector<HTMLInputElement>("#reg-state")!;
   const phoneInput = form.querySelector<HTMLInputElement>("#reg-phone")!;
@@ -35,6 +40,18 @@ export function initRegistrationForm(): void {
   let pickedLng: number | null = null;
   let map: L.Map | null = null;
   let marker: L.Marker | null = null;
+
+  function streetLine(): string {
+    return [streetInput.value.trim(), numberInput.value.trim()]
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  function fullStreetAddress(): string {
+    const line = streetLine();
+    const complement = complementInput.value.trim();
+    return complement ? `${line} - ${complement}` : line;
+  }
 
   function placeMarker(lat: number, lng: number) {
     mapContainer.hidden = false;
@@ -61,14 +78,37 @@ export function initRegistrationForm(): void {
     pickedLng = lng;
   }
 
+  cepInput.addEventListener("input", () => {
+    const digits = cepInput.value.replace(/\D/g, "").slice(0, 8);
+    cepInput.value =
+      digits.length > 5 ? `${digits.slice(0, 5)}-${digits.slice(5)}` : digits;
+
+    if (digits.length !== 8) return;
+
+    statusEl.textContent = "Buscando endereço pelo CEP...";
+    lookupCep(digits).then((address) => {
+      if (!address) {
+        statusEl.textContent = "CEP não encontrado. Preencha o endereço manualmente.";
+        return;
+      }
+
+      if (address.street) streetInput.value = address.street;
+      if (address.city) cityInput.value = address.city;
+      if (address.state) stateInput.value = address.state;
+
+      statusEl.textContent = "Endereço preenchido pelo CEP. Complete o número.";
+      numberInput.focus();
+    });
+  });
+
   locateBtn.addEventListener("click", async () => {
-    const street = streetInput.value.trim();
+    const street = streetLine();
     const city = cityInput.value.trim();
     const state = stateInput.value.trim();
 
-    if (!street || !city || !state) {
+    if (!streetInput.value.trim() || !numberInput.value.trim() || !city || !state) {
       statusEl.textContent =
-        "Preencha rua, cidade e estado antes de localizar no mapa.";
+        "Preencha rua, número, cidade e estado antes de localizar no mapa.";
       return;
     }
 
@@ -126,7 +166,7 @@ export function initRegistrationForm(): void {
       const submission: SalonSubmission = {
         name: nameInput.value.trim(),
         cnpj: cnpjInput.value.trim(),
-        street: streetInput.value.trim(),
+        street: fullStreetAddress(),
         city: cityInput.value.trim(),
         state: stateInput.value.trim(),
         lat: pickedLat,

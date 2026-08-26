@@ -14,7 +14,8 @@
       "Bash(npx --yes playwright screenshot --browser=chromium --viewport-size=1280,850 --wait-for-timeout=1000 http://localhost:5174 sort-filter.png)",
       "Bash(npx --yes playwright screenshot --browser=chromium --viewport-size=390,750 --wait-for-timeout=1000 http://localhost:5174 mobile-filters.png)",
       "Bash(node test-regression.mjs)",
-      "Bash(node -e ' *)"
+      "Bash(node -e ' *)",
+      "Bash(node --env-file-if-exists=.env -e ' *)"
     ]
   }
 }
