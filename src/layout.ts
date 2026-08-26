@@ -126,93 +126,117 @@ export function renderAppShell(): string {
   </section>
 
   <section id="page-cadastro" class="page">
-    <h2>Cadastre seu salão</h2>
-    <p>
-      Preencha os dados abaixo. Seu cadastro passa por uma análise antes de aparecer no site.
-    </p>
-    <form id="registration-form">
-      <label class="form-field">
-        Nome do salão
-        <input id="reg-name" type="text" required />
-      </label>
-      <label class="form-field">
-        CNPJ
-        <input id="reg-cnpj" type="text" required placeholder="00.000.000/0000-00" />
-      </label>
-      <label class="form-field">
-        CEP
-        <input
-          id="reg-cep"
-          type="text"
-          required
-          placeholder="00000-000"
-          inputmode="numeric"
-          maxlength="9"
-        />
-      </label>
-      <label class="form-field">
-        Rua
-        <input id="reg-street" type="text" required />
-      </label>
-      <div class="form-row">
+    <div id="salon-auth-view">
+      <h2>Entrar</h2>
+      <p id="salon-auth-subtitle">
+        Entre com seu e-mail e senha para cadastrar ou editar seu salão.
+      </p>
+      <form id="salon-auth-form">
         <label class="form-field">
-          Número
-          <input id="reg-number" type="text" required />
+          E-mail
+          <input id="auth-email" type="email" required autocomplete="email" />
         </label>
         <label class="form-field">
-          Complemento (opcional)
-          <input id="reg-complement" type="text" placeholder="Apto, sala, bloco..." />
+          Senha
+          <input id="auth-password" type="password" required minlength="6" autocomplete="current-password" />
         </label>
-      </div>
-      <div class="form-row">
-        <label class="form-field">
-          Cidade
-          <input id="reg-city" type="text" required />
-        </label>
-        <label class="form-field">
-          Estado
-          <input id="reg-state" type="text" required maxlength="2" placeholder="RS" />
-        </label>
-      </div>
-      <button type="button" id="reg-locate-address" class="btn btn-instagram">
-        Localizar endereço no mapa
+        <p id="salon-auth-status"></p>
+        <button type="submit" id="salon-auth-submit" class="btn btn-whatsapp">Entrar</button>
+      </form>
+      <button type="button" id="salon-auth-toggle" class="btn btn-instagram">
+        Não tem conta? Criar conta
       </button>
-      <div id="reg-map" hidden></div>
-      <label class="form-field">
-        Telefone / WhatsApp
-        <input id="reg-phone" type="tel" required placeholder="5511999999999" />
-      </label>
-      <label class="form-field">
-        Instagram (opcional)
-        <input id="reg-instagram" type="text" placeholder="seu.salao" />
-      </label>
-      <label class="form-field">
-        E-mail
-        <input id="reg-email" type="email" required autocomplete="email" />
-      </label>
-      <label class="form-field">
-        Senha
-        <input id="reg-password" type="password" required minlength="6" autocomplete="new-password" />
-      </label>
-      <fieldset id="reg-services-field">
-        <legend>Serviços oferecidos</legend>
-        ${ALL_SERVICES.map(
-          (service) => `
-            <label class="service-option">
-              <input type="checkbox" name="reg-service" value="${service}" />
-              <span>${service}</span>
-            </label>
-          `,
-        ).join("")}
-      </fieldset>
-      <label class="form-field">
-        Fotos do salão (até 4)
-        <input id="reg-photos" type="file" accept="image/*" multiple />
-      </label>
-      <div id="reg-photo-preview"></div>
-      <p id="reg-status"></p>
-      <button type="submit" id="reg-submit" class="btn btn-whatsapp">Cadastrar salão</button>
-    </form>
+    </div>
+
+    <div id="salon-form-view" hidden>
+      <div id="salon-form-header">
+        <span id="salon-form-user"></span>
+        <button type="button" id="salon-logout-btn" class="btn btn-instagram">Sair</button>
+      </div>
+      <h2 id="salon-form-title">Cadastre seu salão</h2>
+      <p>
+        Preencha os dados abaixo. Seu cadastro passa por uma análise antes de aparecer no site.
+      </p>
+      <form id="registration-form">
+        <label class="form-field">
+          Nome do salão
+          <input id="reg-name" type="text" required />
+        </label>
+        <label class="form-field">
+          CNPJ
+          <input id="reg-cnpj" type="text" required placeholder="00.000.000/0000-00" />
+        </label>
+        <label class="form-field">
+          CEP
+          <input
+            id="reg-cep"
+            type="text"
+            required
+            placeholder="00000-000"
+            inputmode="numeric"
+            maxlength="9"
+          />
+        </label>
+        <label class="form-field">
+          Rua
+          <input id="reg-street" type="text" required />
+        </label>
+        <div class="form-row">
+          <label class="form-field">
+            Número
+            <input id="reg-number" type="text" required />
+          </label>
+          <label class="form-field">
+            Complemento (opcional)
+            <input id="reg-complement" type="text" placeholder="Apto, sala, bloco..." />
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="form-field">
+            Cidade
+            <input id="reg-city" type="text" required />
+          </label>
+          <label class="form-field">
+            Estado
+            <input id="reg-state" type="text" required maxlength="2" placeholder="RS" />
+          </label>
+        </div>
+        <button type="button" id="reg-locate-address" class="btn btn-instagram">
+          Localizar endereço no mapa
+        </button>
+        <div id="reg-map" hidden></div>
+        <label class="form-field">
+          Telefone / WhatsApp
+          <input id="reg-phone" type="tel" required placeholder="5511999999999" />
+        </label>
+        <label class="form-field">
+          Instagram (opcional)
+          <input id="reg-instagram" type="text" placeholder="seu.salao" />
+        </label>
+        <label class="form-field">
+          E-mail de contato do salão
+          <input id="reg-email" type="email" required autocomplete="email" />
+        </label>
+        <fieldset id="reg-services-field">
+          <legend>Serviços oferecidos</legend>
+          ${ALL_SERVICES.map(
+            (service) => `
+              <label class="service-option">
+                <input type="checkbox" name="reg-service" value="${service}" />
+                <span>${service}</span>
+              </label>
+            `,
+          ).join("")}
+        </fieldset>
+        <label class="form-field">
+          Fotos do salão (até 4)
+          <input id="reg-photos" type="file" accept="image/*" multiple />
+        </label>
+        <div id="reg-photo-preview"></div>
+        <p id="reg-status"></p>
+        <button type="submit" id="reg-submit" class="btn btn-whatsapp">Cadastrar salão</button>
+      </form>
+    </div>
   </section>
 
   <footer id="site-footer">

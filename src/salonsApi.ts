@@ -73,26 +73,31 @@ export async function fetchOwnSalon(ownerId: string): Promise<Salon | null> {
 export async function insertSalon(
   ownerId: string,
   submission: SalonSubmission,
-): Promise<void> {
+): Promise<string> {
   if (!supabase) throw new Error("Supabase não configurado.")
 
-  const { error } = await supabase.from("salons").insert({
-    owner_id: ownerId,
-    name: submission.name,
-    cnpj: submission.cnpj,
-    street: submission.street,
-    city: submission.city,
-    state: submission.state,
-    lat: submission.lat,
-    lng: submission.lng,
-    whatsapp: submission.whatsapp,
-    instagram: submission.instagram || null,
-    email: submission.email,
-    services: submission.services,
-    photos: submission.photos,
-  })
+  const { data, error } = await supabase
+    .from("salons")
+    .insert({
+      owner_id: ownerId,
+      name: submission.name,
+      cnpj: submission.cnpj,
+      street: submission.street,
+      city: submission.city,
+      state: submission.state,
+      lat: submission.lat,
+      lng: submission.lng,
+      whatsapp: submission.whatsapp,
+      instagram: submission.instagram || null,
+      email: submission.email,
+      services: submission.services,
+      photos: submission.photos,
+    })
+    .select("id")
+    .single()
 
   if (error) throw error
+  return data.id as string
 }
 
 export async function updateOwnSalon(

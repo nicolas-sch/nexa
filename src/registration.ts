@@ -1,16 +1,55 @@
 import L from "leaflet";
-import type { SalonSubmission } from "./types";
+import type { Salon, SalonSubmission } from "./types";
 import { geocodeAddress } from "./geocode";
 import { lookupCep } from "./cep";
-import { signUp } from "./auth";
-import { insertSalon, uploadSalonPhotos } from "./salonsApi";
+import { signIn, signUp, signOut, getCurrentUser } from "./auth";
+import { fetchOwnSalon, insertSalon, updateOwnSalon, uploadSalonPhotos } from "./salonsApi";
 
 const MAX_PHOTOS = 4;
 const BRAZIL_CENTER: L.LatLngTuple = [-14.235, -51.9253];
 
+function parseStoredStreet(value: string): {
+  street: string;
+  number: string;
+  complement: string;
+} {
+  const match = value.match(/^(.*),\s*([^,-]+?)(?:\s*-\s*(.*))?$/);
+  if (!match) return { street: value, number: "", complement: "" };
+
+  return {
+    street: match[1].trim(),
+    number: match[2].trim(),
+    complement: (match[3] ?? "").trim(),
+  };
+}
+
 export function initRegistrationForm(): void {
-  const form = document.querySelector<HTMLFormElement>("#registration-form");
-  if (!form) return;
+  const authView = document.querySelector<HTMLElement>("#salon-auth-view")!;
+  const formView = document.querySelector<HTMLElement>("#salon-form-view")!;
+  const form = document.querySelector<HTMLFormElement>("#registration-form")!;
+
+  const authForm = document.querySelector<HTMLFormElement>("#salon-auth-form")!;
+  const authEmailInput = document.querySelector<HTMLInputElement>("#auth-email")!;
+  const authPasswordInput =
+    document.querySelector<HTMLInputElement>("#auth-password")!;
+  const authStatus = document.querySelector<HTMLElement>("#salon-auth-status")!;
+  const authSubmit = document.querySelector<HTMLButtonElement>(
+    "#salon-auth-submit",
+  )!;
+  const authToggle = document.querySelector<HTMLButtonElement>(
+    "#salon-auth-toggle",
+  )!;
+  const authSubtitle = document.querySelector<HTMLElement>(
+    "#salon-auth-subtitle",
+  )!;
+
+  const formUserLabel = document.querySelector<HTMLElement>(
+    "#salon-form-user",
+  )!;
+  const formTitle = document.querySelector<HTMLElement>("#salon-form-title")!;
+  const logoutBtn = document.querySelector<HTMLButtonElement>(
+    "#salon-logout-btn",
+  )!;
 
   const nameInput = form.querySelector<HTMLInputElement>("#reg-name")!;
   const cnpjInput = form.querySelector<HTMLInputElement>("#reg-cnpj")!;
@@ -25,7 +64,6 @@ export function initRegistrationForm(): void {
   const instagramInput =
     form.querySelector<HTMLInputElement>("#reg-instagram")!;
   const emailInput = form.querySelector<HTMLInputElement>("#reg-email")!;
-  const passwordInput = form.querySelector<HTMLInputElement>("#reg-password")!;
   const photosInput = form.querySelector<HTMLInputElement>("#reg-photos")!;
   const photoPreview = form.querySelector<HTMLElement>("#reg-photo-preview")!;
   const locateBtn = form.querySelector<HTMLButtonElement>(
@@ -36,10 +74,13 @@ export function initRegistrationForm(): void {
   const submitBtn = form.querySelector<HTMLButtonElement>("#reg-submit")!;
 
   let selectedFiles: File[] = [];
+  let existingPhotos: string[] = [];
   let pickedLat: number | null = null;
   let pickedLng: number | null = null;
   let map: L.Map | null = null;
   let marker: L.Marker | null = null;
+  let authMode: "signin" | "signup" = "signin";
+  let editingSalonId: string | null = null;
 
   function streetLine(): string {
     return [streetInput.value.trim(), numberInput.value.trim()]
@@ -77,6 +118,126 @@ export function initRegistrationForm(): void {
     pickedLat = lat;
     pickedLng = lng;
   }
+
+  function resetForm() {
+    form.reset();
+    photoPreview.innerHTML = "";
+    mapContainer.hidden = true;
+    selectedFiles = [];
+    existingPhotos = [];
+    pickedLat = null;
+    pickedLng = null;
+    editingSalonId = null;
+    statusEl.textContent = "";
+  }
+
+  function populateFormForEdit(salon: Salon) {
+    editingSalonId = salon.id;
+    nameInput.value = salon.name;
+    cnpjInput.value = salon.cnpj ?? "";
+
+    const parsed = parseStoredStreet(salon.street);
+    streetInput.value = parsed.street;
+    numberInput.value = parsed.number;
+    complementInput.value = parsed.complement;
+
+    cityInput.value = salon.city;
+    stateInput.value = salon.state;
+    phoneInput.value = salon.whatsapp;
+    instagramInput.value = salon.instagram ?? "";
+    emailInput.value = salon.email ?? "";
+
+    form.querySelectorAll<HTMLInputElement>('input[name="reg-service"]').forEach(
+      (checkbox) => {
+        checkbox.checked = salon.services.includes(checkbox.value);
+      },
+    );
+
+    existingPhotos = salon.photos ?? [];
+    photoPreview.innerHTML = existingPhotos
+      .map((url) => `<img src="${url}" alt="" />`)
+      .join("");
+
+    placeMarker(salon.lat, salon.lng);
+
+    formTitle.textContent = "Editar meu salão";
+    submitBtn.textContent = "Salvar alterações";
+  }
+
+  async function showAppropriateView() {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      authView.hidden = false;
+      formView.hidden = true;
+      return;
+    }
+
+    authView.hidden = true;
+    formView.hidden = false;
+    formUserLabel.textContent = `Logado como ${user.email}`;
+
+    resetForm();
+    formTitle.textContent = "Cadastre seu salão";
+    submitBtn.textContent = "Cadastrar salão";
+    emailInput.value = user.email ?? "";
+
+    const existing = await fetchOwnSalon(user.id);
+    if (existing) populateFormForEdit(existing);
+  }
+
+  authToggle.addEventListener("click", () => {
+    authMode = authMode === "signin" ? "signup" : "signin";
+    authStatus.textContent = "";
+
+    if (authMode === "signup") {
+      authSubtitle.textContent =
+        "Crie uma conta com e-mail e senha para cadastrar seu salão.";
+      authSubmit.textContent = "Criar conta";
+      authToggle.textContent = "Já tem conta? Entrar";
+    } else {
+      authSubtitle.textContent =
+        "Entre com seu e-mail e senha para cadastrar ou editar seu salão.";
+      authSubmit.textContent = "Entrar";
+      authToggle.textContent = "Não tem conta? Criar conta";
+    }
+  });
+
+  authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = authEmailInput.value.trim();
+    const password = authPasswordInput.value;
+
+    authSubmit.disabled = true;
+    authStatus.textContent =
+      authMode === "signup" ? "Criando conta..." : "Entrando...";
+
+    try {
+      if (authMode === "signup") {
+        await signUp(email, password);
+      } else {
+        await signIn(email, password);
+      }
+
+      authForm.reset();
+      authStatus.textContent = "";
+      await showAppropriateView();
+    } catch (error) {
+      authStatus.textContent =
+        error instanceof Error ? error.message : "Não foi possível entrar.";
+    } finally {
+      authSubmit.disabled = false;
+    }
+  });
+
+  logoutBtn.addEventListener("click", async () => {
+    await signOut();
+    resetForm();
+    authForm.reset();
+    authStatus.textContent = "";
+    await showAppropriateView();
+  });
 
   cepInput.addEventListener("input", () => {
     const digits = cepInput.value.replace(/\D/g, "").slice(0, 8);
@@ -130,9 +291,11 @@ export function initRegistrationForm(): void {
     const allFiles = Array.from(photosInput.files ?? []);
     selectedFiles = allFiles.slice(0, MAX_PHOTOS);
 
-    photoPreview.innerHTML = selectedFiles
-      .map((file) => `<img src="${URL.createObjectURL(file)}" alt="" />`)
-      .join("");
+    if (selectedFiles.length) {
+      photoPreview.innerHTML = selectedFiles
+        .map((file) => `<img src="${URL.createObjectURL(file)}" alt="" />`)
+        .join("");
+    }
 
     statusEl.textContent =
       allFiles.length > MAX_PHOTOS
@@ -155,13 +318,15 @@ export function initRegistrationForm(): void {
     ).map((input) => input.value);
 
     submitBtn.disabled = true;
-    statusEl.textContent = "Enviando cadastro...";
+    statusEl.textContent = "Enviando...";
 
     try {
-      const user = await signUp(emailInput.value.trim(), passwordInput.value);
+      const user = await getCurrentUser();
+      if (!user) throw new Error("Sua sessão expirou. Entre novamente.");
+
       const photos = selectedFiles.length
         ? await uploadSalonPhotos(selectedFiles)
-        : [];
+        : existingPhotos;
 
       const submission: SalonSubmission = {
         name: nameInput.value.trim(),
@@ -178,17 +343,26 @@ export function initRegistrationForm(): void {
         photos,
       };
 
-      await insertSalon(user.id, submission);
-
-      form.hidden = true;
-      statusEl.textContent =
-        "Cadastro enviado! Seu salão vai passar por uma análise antes de aparecer no site.";
+      if (editingSalonId) {
+        await updateOwnSalon(editingSalonId, submission);
+        statusEl.textContent = "Alterações salvas!";
+      } else {
+        editingSalonId = await insertSalon(user.id, submission);
+        existingPhotos = photos;
+        formTitle.textContent = "Editar meu salão";
+        submitBtn.textContent = "Salvar alterações";
+        statusEl.textContent =
+          "Cadastro enviado! Seu salão vai passar por uma análise antes de aparecer no site.";
+      }
     } catch (error) {
       statusEl.textContent =
         error instanceof Error
           ? error.message
           : "Não foi possível enviar o cadastro.";
+    } finally {
       submitBtn.disabled = false;
     }
   });
+
+  showAppropriateView();
 }
