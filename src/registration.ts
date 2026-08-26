@@ -215,7 +215,13 @@ export function initRegistrationForm(): void {
 
     try {
       if (authMode === "signup") {
-        await signUp(email, password);
+        const { confirmed } = await signUp(email, password);
+
+        if (!confirmed) {
+          authForm.reset();
+          authStatus.textContent = `Enviamos um e-mail de confirmação para ${email}. Clique no link recebido para ativar sua conta e continuar o cadastro do salão.`;
+          return;
+        }
       } else {
         await signIn(email, password);
       }
