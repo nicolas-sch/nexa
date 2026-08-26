@@ -16,7 +16,8 @@
 }
 
 #page-about,
-#page-contact {
+#page-contact,
+#page-cadastro {
   max-width: 640px;
   margin: 0 auto;
 
@@ -31,6 +32,7 @@
   line-height: 1.6;
 }
 
-#page-contact > p {
+#page-contact > p,
+#page-cadastro > p {
   margin: 0 0 24px;
 }

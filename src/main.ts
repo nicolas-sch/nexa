@@ -1,5 +1,8 @@
 import "./style.scss";
-import { salons } from "./data";
+import type { Salon } from "./types";
+import { salons as fallbackSalons } from "./data";
+import { fetchApprovedSalons, fetchOwnSalon } from "./salonsApi";
+import { getCurrentUser } from "./auth";
 import { distanceKm } from "./geo";
 import { initMap, updateMapSalons, setUserLocation, invalidateMapSize } from "./map";
 import { renderAppShell } from "./layout";
@@ -9,6 +12,7 @@ import { initCardGallery } from "./gallery";
 import { initRouter } from "./router";
 import { matchesSearch, buildSuggestionsHtml } from "./search";
 import { initServiceFilter } from "./serviceFilter";
+import { initRegistrationForm } from "./registration";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = renderAppShell();
@@ -21,6 +25,7 @@ const pages: Record<string, HTMLElement> = {
   "/": document.querySelector<HTMLElement>("#page-home")!,
   "/quem-somos": document.querySelector<HTMLElement>("#page-about")!,
   "/contato": document.querySelector<HTMLElement>("#page-contact")!,
+  "/cadastro": document.querySelector<HTMLElement>("#page-cadastro")!,
 };
 
 const contactForm = document.querySelector<HTMLFormElement>("#contact-form")!;
@@ -47,6 +52,7 @@ const ratingFilter =
 
 initMap(mapContainer);
 initCardGallery(results);
+initRegistrationForm();
 
 initRouter({
   menuBtn: document.querySelector<HTMLButtonElement>("#menu-btn")!,
@@ -59,6 +65,7 @@ initRouter({
 
 const PAGE_SIZE = 9;
 
+let salons: Salon[] = [];
 let userLocation: { lat: number; lng: number } | null = null;
 let searchTerm = "";
 let minRating = 0;
@@ -235,4 +242,22 @@ sortFilter.addEventListener("change", () => {
   }
 });
 
-render();
+async function bootstrap() {
+  try {
+    salons = await fetchApprovedSalons();
+
+    const user = await getCurrentUser();
+    if (user) {
+      const own = await fetchOwnSalon(user.id);
+      if (own && !salons.some((s) => s.id === own.id)) {
+        salons = [...salons, own];
+      }
+    }
+  } catch {
+    salons = fallbackSalons;
+  }
+
+  render();
+}
+
+bootstrap();

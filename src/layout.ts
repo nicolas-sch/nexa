@@ -18,6 +18,7 @@ export function renderAppShell(): string {
         <a href="#/" data-route="/">Início</a>
         <a href="#/quem-somos" data-route="/quem-somos">Quem Somos</a>
         <a href="#/contato" data-route="/contato">Contato</a>
+        <a href="#/cadastro" data-route="/cadastro">Cadastre seu salão</a>
       </nav>
     </div>
   </header>
@@ -124,6 +125,75 @@ export function renderAppShell(): string {
     </form>
   </section>
 
+  <section id="page-cadastro" class="page">
+    <h2>Cadastre seu salão</h2>
+    <p>
+      Preencha os dados abaixo. Seu cadastro passa por uma análise antes de aparecer no site.
+    </p>
+    <form id="registration-form">
+      <label class="form-field">
+        Nome do salão
+        <input id="reg-name" type="text" required />
+      </label>
+      <label class="form-field">
+        CNPJ
+        <input id="reg-cnpj" type="text" required placeholder="00.000.000/0000-00" />
+      </label>
+      <label class="form-field">
+        Rua e número
+        <input id="reg-street" type="text" required />
+      </label>
+      <div class="form-row">
+        <label class="form-field">
+          Cidade
+          <input id="reg-city" type="text" required />
+        </label>
+        <label class="form-field">
+          Estado
+          <input id="reg-state" type="text" required maxlength="2" placeholder="RS" />
+        </label>
+      </div>
+      <button type="button" id="reg-locate-address" class="btn btn-instagram">
+        Localizar endereço no mapa
+      </button>
+      <div id="reg-map" hidden></div>
+      <label class="form-field">
+        Telefone / WhatsApp
+        <input id="reg-phone" type="tel" required placeholder="5511999999999" />
+      </label>
+      <label class="form-field">
+        Instagram (opcional)
+        <input id="reg-instagram" type="text" placeholder="seu.salao" />
+      </label>
+      <label class="form-field">
+        E-mail
+        <input id="reg-email" type="email" required autocomplete="email" />
+      </label>
+      <label class="form-field">
+        Senha
+        <input id="reg-password" type="password" required minlength="6" autocomplete="new-password" />
+      </label>
+      <fieldset id="reg-services-field">
+        <legend>Serviços oferecidos</legend>
+        ${ALL_SERVICES.map(
+          (service) => `
+            <label class="service-option">
+              <input type="checkbox" name="reg-service" value="${service}" />
+              <span>${service}</span>
+            </label>
+          `,
+        ).join("")}
+      </fieldset>
+      <label class="form-field">
+        Fotos do salão (até 4)
+        <input id="reg-photos" type="file" accept="image/*" multiple />
+      </label>
+      <div id="reg-photo-preview"></div>
+      <p id="reg-status"></p>
+      <button type="submit" id="reg-submit" class="btn btn-whatsapp">Cadastrar salão</button>
+    </form>
+  </section>
+
   <footer id="site-footer">
     <div id="footer-inner">
       <div class="footer-col">
@@ -135,6 +205,7 @@ export function renderAppShell(): string {
         <a href="#/" data-route="/">Início</a>
         <a href="#/quem-somos" data-route="/quem-somos">Quem Somos</a>
         <a href="#/contato" data-route="/contato">Contato</a>
+        <a href="#/cadastro" data-route="/cadastro">Cadastre seu salão</a>
       </div>
       <div class="footer-col">
         <h4>Contato</h4>

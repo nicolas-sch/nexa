@@ -33,9 +33,11 @@ export function renderCard(
         )
       : null;
 
-  const images = salon.imageUrl
-    ? [salon.imageUrl, ...SERVICE_PHOTOS]
-    : SERVICE_PHOTOS;
+  const images = salon.photos?.length
+    ? salon.photos
+    : salon.imageUrl
+      ? [salon.imageUrl, ...SERVICE_PHOTOS]
+      : SERVICE_PHOTOS;
 
   const galleryNav =
     images.length > 1
@@ -75,12 +77,16 @@ export function renderCard(
           target="_blank"
           rel="noopener noreferrer"
         >${whatsappIcon} WhatsApp</a>
-        <a
+        ${
+          salon.instagram
+            ? `<a
           class="btn btn-instagram"
           href="https://instagram.com/${salon.instagram}"
           target="_blank"
           rel="noopener noreferrer"
-        >${instagramIcon} Instagram</a>
+        >${instagramIcon} Instagram</a>`
+            : ""
+        }
       </div>
     </article>
   `;
