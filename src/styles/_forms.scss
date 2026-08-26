@@ -295,6 +295,12 @@
   &[hidden] {
     display: none;
   }
+
+  @media (max-width: 796px) {
+    left: auto;
+    right: 0;
+    width: min(260px, calc(100vw - 40px));
+  }
 }
 
 .service-option {
