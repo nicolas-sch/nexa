@@ -125,11 +125,14 @@ const rsStreets = [
 ]
 
 const rsServiceCombos: string[][] = [
-  ['Corte', 'Escova'],
-  ['Coloração', 'Escova', 'Corte'],
-  ['Unhas', 'Depilação'],
-  ['Corte', 'Coloração', 'Unhas'],
-  ['Escova', 'Depilação', 'Unhas', 'Corte'],
+  ['Corte masculino', 'Barba masculina'],
+  ['Corte feminino', 'Progressiva / alisamento definitivo', 'Mega Hair'],
+  ['Manicure / pedicure tradicional', 'Esmaltação em gel', 'Alongamento de unhas'],
+  ['Depilação facial', 'Depilação corporal', 'Depilação à laser'],
+  ['Aplicação / manutenção de cílios', 'Nanoblanding', 'Maquiagem'],
+  ['Limpeza de pele', 'Tratamento facial', 'Botox facial'],
+  ['Cabelos afros', 'Trancista', 'Tratamento capilar'],
+  ['Massagem corporal', 'Bronzeamento artificial', 'Body piercing', 'Podologia', 'Penteados'],
 ]
 
 const rsRatingCycle = [5, 4.5, 4, 3.5]
@@ -173,7 +176,7 @@ export const salons: Salon[] = [
     whatsapp: '5511987654321',
     instagram: 'studiobellahair',
     imageUrl: '/imagemsalao.jpg',
-    services: ['Escova', 'Coloração', 'Corte'],
+    services: ['Corte feminino', 'Progressiva / alisamento definitivo', 'Mega Hair'],
     rating: 5,
   },
   {
@@ -187,7 +190,7 @@ export const salons: Salon[] = [
     whatsapp: '5521998765432',
     instagram: 'belezapura.rj',
     imageUrl: '/imagemsalao2.webp',
-    services: ['Unhas', 'Depilação', 'Escova'],
+    services: ['Manicure / pedicure tradicional', 'Depilação corporal', 'Esmaltação em gel'],
     rating: 4,
   },
   {
@@ -201,7 +204,7 @@ export const salons: Salon[] = [
     whatsapp: '5531991234567',
     instagram: 'saloneleganceBH',
     imageUrl: '/imagemsalao3.jpg',
-    services: ['Corte', 'Coloração', 'Unhas', 'Depilação'],
+    services: ['Corte masculino', 'Barba masculina', 'Tratamento capilar', 'Maquiagem'],
     rating: 4.5,
   },
   ...rsSalons,

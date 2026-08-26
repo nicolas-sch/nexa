@@ -8,6 +8,7 @@ import { renderPagination, initPagination } from "./pagination";
 import { initCardGallery } from "./gallery";
 import { initRouter } from "./router";
 import { matchesSearch, buildSuggestionsHtml } from "./search";
+import { initServiceFilter } from "./serviceFilter";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = renderAppShell();
@@ -43,8 +44,6 @@ const mapContainer = document.querySelector<HTMLDivElement>("#map")!;
 const sortFilter = document.querySelector<HTMLSelectElement>("#sort-filter")!;
 const ratingFilter =
   document.querySelector<HTMLSelectElement>("#rating-filter")!;
-const serviceFilter =
-  document.querySelector<HTMLSelectElement>("#service-filter")!;
 
 initMap(mapContainer);
 initCardGallery(results);
@@ -63,16 +62,23 @@ const PAGE_SIZE = 9;
 let userLocation: { lat: number; lng: number } | null = null;
 let searchTerm = "";
 let minRating = 0;
-let serviceTerm = "";
+let selectedServices = new Set<string>();
 let sortBy: "" | "distance" | "rating" = "";
 let currentPage = 1;
+
+initServiceFilter((selected) => {
+  selectedServices = selected;
+  currentPage = 1;
+  render();
+});
 
 function render() {
   let list = salons.filter(
     (s) =>
       matchesSearch(s, searchTerm) &&
       s.rating >= minRating &&
-      (!serviceTerm || s.services.includes(serviceTerm)),
+      (!selectedServices.size ||
+        s.services.some((service) => selectedServices.has(service))),
   );
 
   if (sortBy === "rating") {
@@ -187,12 +193,6 @@ document.addEventListener("click", (event) => {
 
 ratingFilter.addEventListener("change", () => {
   minRating = Number(ratingFilter.value);
-  currentPage = 1;
-  render();
-});
-
-serviceFilter.addEventListener("change", () => {
-  serviceTerm = serviceFilter.value;
   currentPage = 1;
   render();
 });

@@ -1,5 +1,7 @@
 import searchIcon from "@material-design-icons/svg/filled/search.svg?raw";
 import myLocationIcon from "@material-design-icons/svg/filled/my_location.svg?raw";
+import expandMoreIcon from "@material-design-icons/svg/filled/expand_more.svg?raw";
+import { ALL_SERVICES } from "./services";
 
 export function renderAppShell(): string {
   return `
@@ -62,17 +64,29 @@ export function renderAppShell(): string {
           <option value="3">3+ estrelas</option>
         </select>
       </label>
-      <label class="filter-field">
+      <div class="filter-field" id="service-filter-field">
         Serviço
-        <select id="service-filter">
-          <option value="">Todos</option>
-          <option value="Escova">Escova</option>
-          <option value="Coloração">Coloração</option>
-          <option value="Unhas">Unhas</option>
-          <option value="Depilação">Depilação</option>
-          <option value="Corte">Corte</option>
-        </select>
-      </label>
+        <button
+          type="button"
+          id="service-filter-btn"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <span id="service-filter-summary">Todos</span>
+          ${expandMoreIcon}
+        </button>
+        <div id="service-filter-panel" hidden>
+          ${ALL_SERVICES.map(
+            (service) => `
+              <label class="service-option">
+                <input type="checkbox" value="${service}" />
+                <span>${service}</span>
+              </label>
+            `,
+          ).join("")}
+          <button type="button" id="service-filter-clear">Limpar seleção</button>
+        </div>
+      </div>
     </div>
 
     <main id="results"></main>
@@ -82,9 +96,7 @@ export function renderAppShell(): string {
   <section id="page-about" class="page">
     <h2>Quem Somos</h2>
     <p>
-      O Nexa nasceu para aproximar quem busca cuidado e beleza dos melhores salões do Brasil.
-      Reunimos informações de endereço, avaliações e serviços em um só lugar, para que você
-      encontre o salão ideal perto de você em poucos cliques.
+      A NEXA conecta pessoas a espaços de beleza, clinicas estéticas e barbearias locais, promovendo uma visibilidade aos estabelecimentos e proporcionando aos usuários uma experiencia única de beleza, cuidado e conexão em cada destino.
     </p>
     <p>
       Nosso objetivo é valorizar profissionais da beleza, dando visibilidade a salões de todos

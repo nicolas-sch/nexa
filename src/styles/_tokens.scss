@@ -11,8 +11,8 @@
   --shadow:
     rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
 
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
+  --sans: "Courgette", cursive;
+  --heading: "Courgette", cursive;
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
@@ -33,6 +33,14 @@
   box-sizing: border-box;
 }
 
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
 html {
   overflow-x: hidden;
 }
@@ -45,7 +53,7 @@ body {
 h1,
 h2 {
   font-family: var(--heading);
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-h);
   margin: 0;
 }
