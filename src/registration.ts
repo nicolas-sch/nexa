@@ -43,12 +43,13 @@ export function initRegistrationForm(): void {
     "#salon-auth-subtitle",
   )!;
 
-  const formUserLabel = document.querySelector<HTMLElement>(
-    "#salon-form-user",
+  const headerUser = document.querySelector<HTMLElement>("#header-user")!;
+  const headerUserValue = document.querySelector<HTMLElement>(
+    "#header-user-value",
   )!;
   const formTitle = document.querySelector<HTMLElement>("#salon-form-title")!;
   const logoutBtn = document.querySelector<HTMLButtonElement>(
-    "#salon-logout-btn",
+    "#header-logout-btn",
   )!;
 
   const nameInput = form.querySelector<HTMLInputElement>("#reg-name")!;
@@ -212,12 +213,14 @@ export function initRegistrationForm(): void {
     if (!user) {
       authView.hidden = false;
       formView.hidden = true;
+      headerUser.hidden = true;
       return;
     }
 
     authView.hidden = true;
     formView.hidden = false;
-    formUserLabel.textContent = `Logado como ${user.email}`;
+    headerUser.hidden = false;
+    headerUserValue.textContent = user.email ?? "";
 
     resetForm();
     formTitle.textContent = "Cadastre seu salão";

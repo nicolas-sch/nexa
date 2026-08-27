@@ -19,6 +19,13 @@ export function renderAppShell(): string {
         <a href="#/contato" data-route="/contato">Contato</a>
         <a href="#/cadastro" data-route="/cadastro">Cadastre seu salão</a>
       </nav>
+      <div id="header-user" hidden>
+        <span id="header-user-email">
+          <small>Logado como</small>
+          <strong id="header-user-value"></strong>
+        </span>
+        <button type="button" id="header-logout-btn" class="btn btn-instagram">Sair</button>
+      </div>
     </div>
   </header>
 
@@ -148,10 +155,6 @@ export function renderAppShell(): string {
     </div>
 
     <div id="salon-form-view" hidden>
-      <div id="salon-form-header">
-        <span id="salon-form-user"></span>
-        <button type="button" id="salon-logout-btn" class="btn btn-instagram">Sair</button>
-      </div>
       <h2 id="salon-form-title">Cadastre seu salão</h2>
       <p>
         Preencha os dados abaixo. Seu cadastro passa por uma análise antes de aparecer no site.
