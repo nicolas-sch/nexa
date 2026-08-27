@@ -11,8 +11,7 @@ export function renderAppShell(): string {
         <span></span><span></span><span></span>
       </button>
       <div id="header-titles">
-        <h1>Nexa</h1>
-        <p class="subtitle">Onde a beleza encontra conexão</p>
+        <img id="header-logo" src="/logo/nexa_logo_horizontal_preto.png" alt="Nexa" />
       </div>
       <nav id="nav-menu">
         <a href="#/" data-route="/">Início</a>

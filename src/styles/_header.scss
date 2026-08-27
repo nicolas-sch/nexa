@@ -29,14 +29,13 @@
 #header-titles {
   flex: 1;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 12px;
 }
 
-.subtitle {
-  margin: 0;
-  color: rgba(11, 11, 11, 0.7);
+#header-logo {
+  height: 80px;
+  width: auto;
 }
 
 #menu-btn {
