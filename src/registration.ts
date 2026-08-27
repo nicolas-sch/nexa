@@ -67,9 +67,6 @@ export function initRegistrationForm(): void {
   const emailInput = form.querySelector<HTMLInputElement>("#reg-email")!;
   const photosInput = form.querySelector<HTMLInputElement>("#reg-photos")!;
   const photoPreview = form.querySelector<HTMLElement>("#reg-photo-preview")!;
-  const locateBtn = form.querySelector<HTMLButtonElement>(
-    "#reg-locate-address",
-  )!;
   const mapContainer = form.querySelector<HTMLElement>("#reg-map")!;
   const statusEl = form.querySelector<HTMLElement>("#reg-status")!;
   const submitBtn = form.querySelector<HTMLButtonElement>("#reg-submit")!;
@@ -180,6 +177,7 @@ export function initRegistrationForm(): void {
     editingSalonId = salon.id;
     nameInput.value = salon.name;
     cnpjInput.value = salon.cnpj ?? "";
+    cepInput.value = salon.cep ?? "";
 
     const parsed = parseStoredStreet(salon.street);
     streetInput.value = parsed.street;
@@ -313,30 +311,21 @@ export function initRegistrationForm(): void {
     });
   });
 
-  locateBtn.addEventListener("click", async () => {
+  async function resolveLocation() {
+    if (pickedLat != null && pickedLng != null) return;
+
     const street = streetLine();
     const city = cityInput.value.trim();
     const state = stateInput.value.trim();
 
-    if (!streetInput.value.trim() || !numberInput.value.trim() || !city || !state) {
-      statusEl.textContent =
-        "Preencha rua, número, cidade e estado antes de localizar no mapa.";
-      return;
-    }
-
-    statusEl.textContent = "Buscando endereço...";
     const result = await geocodeAddress(street, city, state);
 
     if (result) {
       placeMarker(result.lat, result.lng);
-      statusEl.textContent =
-        "Endereço encontrado. Arraste o pino se precisar ajustar.";
     } else {
       placeMarker(BRAZIL_CENTER[0], BRAZIL_CENTER[1]);
-      statusEl.textContent =
-        "Não encontramos o endereço automaticamente. Arraste o pino até o local certo.";
     }
-  });
+  }
 
   photosInput.addEventListener("change", () => {
     const chosenFiles = Array.from(photosInput.files ?? []);
@@ -357,11 +346,6 @@ export function initRegistrationForm(): void {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    if (pickedLat == null || pickedLng == null) {
-      statusEl.textContent = "Localize o endereço no mapa antes de enviar.";
-      return;
-    }
-
     const services = Array.from(
       form.querySelectorAll<HTMLInputElement>(
         'input[name="reg-service"]:checked',
@@ -372,6 +356,8 @@ export function initRegistrationForm(): void {
     statusEl.textContent = "Enviando...";
 
     try {
+      await resolveLocation();
+
       const user = await getCurrentUser();
       if (!user) throw new Error("Sua sessão expirou. Entre novamente.");
 
@@ -386,6 +372,7 @@ export function initRegistrationForm(): void {
         street: fullStreetAddress(),
         city: cityInput.value.trim(),
         state: stateInput.value.trim(),
+        cep: cepInput.value.trim() || undefined,
         lat: pickedLat,
         lng: pickedLng,
         whatsapp: phoneInput.value.trim(),

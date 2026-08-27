@@ -4,6 +4,7 @@ export interface Salon {
   street: string
   city: string
   state: string
+  cep?: string
   lat: number
   lng: number
   whatsapp: string // digits only, with country code, e.g. 5511999999999
@@ -24,6 +25,7 @@ export interface SalonSubmission {
   street: string
   city: string
   state: string
+  cep?: string
   lat: number | null
   lng: number | null
   whatsapp: string

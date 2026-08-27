@@ -202,9 +202,6 @@ export function renderAppShell(): string {
             <input id="reg-state" type="text" required maxlength="2" placeholder="RS" />
           </label>
         </div>
-        <button type="button" id="reg-locate-address" class="btn btn-instagram">
-          Localizar endereço no mapa
-        </button>
         <div id="reg-map" hidden></div>
         <label class="form-field">
           Telefone / WhatsApp
