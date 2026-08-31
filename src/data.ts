@@ -161,6 +161,7 @@ const rsSalons: Salon[] = rsCities.map((location, index) => {
     imageUrl: rsImageCycle[index % rsImageCycle.length],
     services: rsServiceCombos[index % rsServiceCombos.length],
     rating: rsRatingCycle[index % rsRatingCycle.length],
+    plan: 'basic',
   }
 })
 
@@ -178,6 +179,7 @@ export const salons: Salon[] = [
     imageUrl: '/imagemsalao.jpg',
     services: ['Corte feminino', 'Progressiva / alisamento definitivo', 'Mega Hair'],
     rating: 5,
+    plan: 'top',
   },
   {
     id: '2',
@@ -192,6 +194,7 @@ export const salons: Salon[] = [
     imageUrl: '/imagemsalao2.webp',
     services: ['Manicure / pedicure tradicional', 'Depilação corporal', 'Esmaltação em gel'],
     rating: 4,
+    plan: 'basic',
   },
   {
     id: '3',
@@ -206,6 +209,7 @@ export const salons: Salon[] = [
     imageUrl: '/imagemsalao3.jpg',
     services: ['Corte masculino', 'Barba masculina', 'Tratamento capilar', 'Maquiagem'],
     rating: 4.5,
+    plan: 'basic',
   },
   ...rsSalons,
 ]

@@ -1,8 +1,8 @@
-import type { Salon, SalonSubmission } from "./types"
+import type { Salon, SalonPlan, SalonSubmission } from "./types"
 import { supabase, SALON_PHOTOS_BUCKET } from "./supabaseClient"
 
 const SALON_COLUMNS =
-  "id,name,cnpj,street,city,state,cep,lat,lng,whatsapp,instagram,email,services,photos,rating"
+  "id,name,cnpj,street,city,state,cep,lat,lng,whatsapp,instagram,email,services,photos,rating,plan"
 
 interface SalonRow {
   id: string
@@ -20,6 +20,7 @@ interface SalonRow {
   services: string[]
   photos: string[]
   rating: number
+  plan: SalonPlan
 }
 
 function rowToSalon(row: SalonRow): Salon | null {
@@ -41,6 +42,7 @@ function rowToSalon(row: SalonRow): Salon | null {
     photos: row.photos.length ? row.photos : undefined,
     services: row.services,
     rating: row.rating,
+    plan: row.plan,
   }
 }
 

@@ -99,6 +99,12 @@ function render() {
     );
   }
 
+  // Top-plan salons always lead the list; stable sort preserves the
+  // ordering above within each plan group.
+  list = [...list].sort(
+    (a, b) => Number(b.plan === "top") - Number(a.plan === "top"),
+  );
+
   const totalPages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
   currentPage = Math.min(currentPage, totalPages);
   const pageItems = list.slice(

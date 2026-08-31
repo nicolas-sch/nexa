@@ -57,6 +57,7 @@ export function renderCard(
 
   return `
     <article class="salon-card">
+      ${salon.plan === "top" ? `<span class="salon-badge-top">Salão Top</span>` : ""}
       <div class="salon-card-media">${imageBlock}</div>
       <div class="salon-card-body">
         <div class="salon-card-header">
