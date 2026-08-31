@@ -57,36 +57,38 @@ export function renderCard(
 
   return `
     <article class="salon-card">
-      ${imageBlock}
-      <div class="salon-card-header">
-        <h2>${salon.name}</h2>
-        ${dist ? `<span class="salon-distance">${dist}</span>` : ""}
-      </div>
-      <div class="salon-rating">
-        ${renderStars(salon.rating)}
-        <span class="salon-rating-value">${salon.rating.toFixed(1).replace(".0", "")}</span>
-      </div>
-      <p class="salon-address">${salon.street} — ${salon.city}/${salon.state}</p>
-      <ul class="salon-services">
-        ${salon.services.map((service) => `<li>${service}</li>`).join("")}
-      </ul>
-      <div class="salon-actions">
-        <a
-          class="btn btn-whatsapp"
-          href="https://wa.me/${salon.whatsapp}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >${whatsappIcon} WhatsApp</a>
-        ${
-          salon.instagram
-            ? `<a
-          class="btn btn-instagram"
-          href="https://instagram.com/${salon.instagram.replace(/^@/, "")}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >${instagramIcon} Instagram</a>`
-            : ""
-        }
+      <div class="salon-card-media">${imageBlock}</div>
+      <div class="salon-card-body">
+        <div class="salon-card-header">
+          <h2>${salon.name}</h2>
+          ${dist ? `<span class="salon-distance">${dist}</span>` : ""}
+        </div>
+        <div class="salon-rating">
+          ${renderStars(salon.rating)}
+          <span class="salon-rating-value">${salon.rating.toFixed(1).replace(".0", "")}</span>
+        </div>
+        <p class="salon-address">${salon.street} — ${salon.city}/${salon.state}</p>
+        <ul class="salon-services">
+          ${salon.services.map((service) => `<li>${service}</li>`).join("")}
+        </ul>
+        <div class="salon-actions">
+          <a
+            class="btn btn-whatsapp"
+            href="https://wa.me/${salon.whatsapp}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >${whatsappIcon} WhatsApp</a>
+          ${
+            salon.instagram
+              ? `<a
+            class="btn btn-instagram"
+            href="https://instagram.com/${salon.instagram.replace(/^@/, "")}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >${instagramIcon} Instagram</a>`
+              : ""
+          }
+        </div>
       </div>
     </article>
   `;

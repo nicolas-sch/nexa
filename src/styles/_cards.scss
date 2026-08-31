@@ -1,29 +1,49 @@
 #results {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  align-items: start;
 }
 
 .salon-card {
-  min-height: 450px;
   border: 1px solid var(--border);
   background: var(--card-bg);
   border-radius: 12px;
   overflow: hidden;
   text-align: left;
   display: flex;
+  align-items: stretch;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.salon-card-media {
+  flex-shrink: 0;
+  width: 260px;
+
+  .card-gallery,
+  .salon-image {
+    height: 100%;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+
+    .card-gallery,
+    .salon-image {
+      height: 200px;
+    }
+  }
+}
+
+.salon-card-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
   flex-direction: column;
   gap: 10px;
-  padding-bottom: 20px;
-
-  > .salon-card-header,
-  > .salon-rating,
-  > .salon-address,
-  > .salon-services,
-  > .salon-actions {
-    margin-inline: 20px;
-  }
+  padding: 20px;
 }
 
 .card-gallery {
