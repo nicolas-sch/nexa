@@ -205,7 +205,7 @@ export function renderAppShell(): string {
         <div id="reg-map" hidden></div>
         <label class="form-field">
           Telefone / WhatsApp
-          <input id="reg-phone" type="tel" required placeholder="5511999999999" />
+          <input id="reg-phone" type="tel" required placeholder="+55 (11) 99999-9999" />
         </label>
         <label class="form-field">
           Instagram (opcional)

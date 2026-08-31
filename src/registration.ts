@@ -79,6 +79,22 @@ export function initRegistrationForm(): void {
   let marker: L.Marker | null = null;
   let authMode: "signin" | "signup" = "signin";
   let editingSalonId: string | null = null;
+  let phoneDigits = "";
+
+  function formatPhoneDisplay(digits: string): string {
+    if (!digits) return "";
+
+    const ddd = digits.slice(0, 2);
+    const rest = digits.slice(2);
+
+    let out = "+55";
+    if (ddd) out += ` (${ddd}${digits.length >= 2 ? ")" : ""}`;
+    if (rest) {
+      const splitAt = Math.max(rest.length - 4, 0);
+      out += rest.length > 4 ? ` ${rest.slice(0, splitAt)}-${rest.slice(splitAt)}` : ` ${rest}`;
+    }
+    return out;
+  }
 
   function streetLine(): string {
     return [streetInput.value.trim(), numberInput.value.trim()]
@@ -170,6 +186,7 @@ export function initRegistrationForm(): void {
     pickedLat = null;
     pickedLng = null;
     editingSalonId = null;
+    phoneDigits = "";
     statusEl.textContent = "";
   }
 
@@ -186,7 +203,10 @@ export function initRegistrationForm(): void {
 
     cityInput.value = salon.city;
     stateInput.value = salon.state;
-    phoneInput.value = salon.whatsapp;
+    phoneDigits = salon.whatsapp.startsWith("55")
+      ? salon.whatsapp.slice(2)
+      : salon.whatsapp;
+    phoneInput.value = formatPhoneDisplay(phoneDigits);
     instagramInput.value = salon.instagram ?? "";
     emailInput.value = salon.email ?? "";
 
@@ -311,6 +331,27 @@ export function initRegistrationForm(): void {
     });
   });
 
+  phoneInput.addEventListener("beforeinput", (event) => {
+    const inputType = (event as InputEvent).inputType;
+    if (inputType !== "deleteContentBackward" && inputType !== "deleteContentForward") {
+      return;
+    }
+
+    event.preventDefault();
+    phoneDigits = phoneDigits.slice(0, -1);
+    phoneInput.value = formatPhoneDisplay(phoneDigits);
+  });
+
+  phoneInput.addEventListener("input", () => {
+    let value = phoneInput.value;
+    if (value.startsWith("+55")) value = value.slice(3);
+
+    const digits = value.replace(/\D/g, "").slice(0, 11);
+
+    phoneDigits = digits;
+    phoneInput.value = formatPhoneDisplay(digits);
+  });
+
   async function resolveLocation() {
     if (pickedLat != null && pickedLng != null) return;
 
@@ -375,7 +416,7 @@ export function initRegistrationForm(): void {
         cep: cepInput.value.trim() || undefined,
         lat: pickedLat,
         lng: pickedLng,
-        whatsapp: phoneInput.value.trim(),
+        whatsapp: `55${phoneDigits}`,
         instagram: instagramInput.value.trim() || undefined,
         email: emailInput.value.trim(),
         services,
