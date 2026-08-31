@@ -81,7 +81,7 @@ export function renderCard(
           salon.instagram
             ? `<a
           class="btn btn-instagram"
-          href="https://instagram.com/${salon.instagram}"
+          href="https://instagram.com/${salon.instagram.replace(/^@/, "")}"
           target="_blank"
           rel="noopener noreferrer"
         >${instagramIcon} Instagram</a>`

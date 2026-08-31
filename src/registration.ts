@@ -423,7 +423,7 @@ export function initRegistrationForm(): void {
         lat: pickedLat,
         lng: pickedLng,
         whatsapp: `55${phoneDigits}`,
-        instagram: instagramInput.value.trim() || undefined,
+        instagram: instagramInput.value.trim().replace(/^@/, "") || undefined,
         email: emailInput.value.trim(),
         services,
         photos,
