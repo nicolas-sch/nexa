@@ -66,6 +66,7 @@ export function initRegistrationForm(): void {
     form.querySelector<HTMLInputElement>("#reg-instagram")!;
   const emailInput = form.querySelector<HTMLInputElement>("#reg-email")!;
   const photosInput = form.querySelector<HTMLInputElement>("#reg-photos")!;
+  const photosStatus = form.querySelector<HTMLElement>("#reg-photos-status")!;
   const photoPreview = form.querySelector<HTMLElement>("#reg-photo-preview")!;
   const mapContainer = form.querySelector<HTMLElement>("#reg-map")!;
   const statusEl = form.querySelector<HTMLElement>("#reg-status")!;
@@ -132,6 +133,10 @@ export function initRegistrationForm(): void {
       .join("");
 
     photoPreview.innerHTML = existingHtml + newHtml;
+
+    photosStatus.textContent = selectedFiles.length
+      ? `${selectedFiles.length} arquivo${selectedFiles.length > 1 ? "s" : ""} selecionado${selectedFiles.length > 1 ? "s" : ""}`
+      : "Nenhum arquivo selecionado";
   }
 
   photoPreview.addEventListener("click", (event) => {
@@ -180,6 +185,7 @@ export function initRegistrationForm(): void {
   function resetForm() {
     form.reset();
     photoPreview.innerHTML = "";
+    photosStatus.textContent = "Nenhum arquivo selecionado";
     mapContainer.hidden = true;
     selectedFiles = [];
     existingPhotos = [];

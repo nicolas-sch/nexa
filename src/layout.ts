@@ -228,7 +228,11 @@ export function renderAppShell(): string {
         </fieldset>
         <label class="form-field">
           Fotos do salão (até 10)
-          <input id="reg-photos" type="file" accept="image/*" multiple />
+          <div id="reg-photos-field">
+            <span class="file-input-btn">Escolher fotos</span>
+            <span id="reg-photos-status">Nenhum arquivo selecionado</span>
+            <input id="reg-photos" type="file" accept="image/*" multiple hidden />
+          </div>
         </label>
         <div id="reg-photo-preview"></div>
         <p id="reg-status"></p>
@@ -240,8 +244,7 @@ export function renderAppShell(): string {
   <footer id="site-footer">
     <div id="footer-inner">
       <div class="footer-col">
-        <h3>Nexa</h3>
-        <p>Onde a beleza encontra conexão.</p>
+        <img id="footer-logo" src="/logo/nexa_logo_vetor.svg" alt="Nexa" />
       </div>
       <div class="footer-col">
         <h4>Navegação</h4>

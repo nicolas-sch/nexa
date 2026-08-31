@@ -16,6 +16,33 @@
   color: var(--accent-light);
 }
 
+#reg-photos-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.file-input-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  color: var(--accent-light);
+  font-size: 14px;
+  font-weight: 600;
+
+  &:hover {
+    background: var(--accent-bg);
+  }
+}
+
+#reg-photos-status {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--text);
+}
+
 #registration-form {
   display: flex;
   flex-direction: column;
