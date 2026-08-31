@@ -75,10 +75,13 @@
 }
 
 .leaflet-control-attribution {
-  background: rgba(11, 11, 11, 0.7) !important;
-  color: var(--text) !important;
+  background: transparent !important;
+  color: rgba(11, 11, 11, 0.35) !important;
+  font-size: 9px !important;
+  padding: 0 4px !important;
+  box-shadow: none !important;
 
   a {
-    color: var(--accent) !important;
+    color: rgba(11, 11, 11, 0.45) !important;
   }
 }
