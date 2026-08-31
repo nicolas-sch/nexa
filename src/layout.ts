@@ -227,7 +227,7 @@ export function renderAppShell(): string {
           ).join("")}
         </fieldset>
         <label class="form-field">
-          Fotos do salão (até 4)
+          Fotos do salão (até 10)
           <input id="reg-photos" type="file" accept="image/*" multiple />
         </label>
         <div id="reg-photo-preview"></div>

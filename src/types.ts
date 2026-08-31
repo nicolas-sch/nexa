@@ -10,7 +10,7 @@ export interface Salon {
   whatsapp: string // digits only, with country code, e.g. 5511999999999
   instagram?: string // handle without @
   imageUrl?: string
-  photos?: string[] // owner-uploaded photos, up to 4, takes priority over imageUrl when present
+  photos?: string[] // owner-uploaded photos, up to 10, takes priority over imageUrl when present
   cnpj?: string
   email?: string
   services: string[]

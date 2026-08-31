@@ -5,7 +5,7 @@ import { lookupCep } from "./cep";
 import { signIn, signUp, signOut, getCurrentUser } from "./auth";
 import { fetchOwnSalon, insertSalon, updateOwnSalon, uploadSalonPhotos } from "./salonsApi";
 
-const MAX_PHOTOS = 4;
+const MAX_PHOTOS = 10;
 const BRAZIL_CENTER: L.LatLngTuple = [-14.235, -51.9253];
 
 function parseStoredStreet(value: string): {

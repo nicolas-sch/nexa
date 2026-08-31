@@ -116,7 +116,7 @@ export async function updateOwnSalon(
 export async function uploadSalonPhotos(files: File[]): Promise<string[]> {
   if (!supabase) throw new Error("Supabase não configurado.")
 
-  const limited = files.slice(0, 4)
+  const limited = files.slice(0, 10)
   const urls: string[] = []
 
   for (const file of limited) {
