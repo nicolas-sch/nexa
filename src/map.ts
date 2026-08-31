@@ -36,11 +36,18 @@ export function initMap(container: HTMLElement): void {
 export function updateMapSalons(salons: Salon[]): void {
   markersLayer.clearLayers()
 
-  const markers = salons.map((salon) =>
-    L.marker([salon.lat, salon.lng], { icon: salonIcon })
-      .bindPopup(`<strong>${salon.name}</strong><br>${salon.street} — ${salon.city}/${salon.state}`)
-      .addTo(markersLayer),
-  )
+  const markers = salons.map((salon) => {
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${salon.lat},${salon.lng}`
+
+    return L.marker([salon.lat, salon.lng], { icon: salonIcon })
+      .bindPopup(
+        `<strong>${salon.name}</strong><br>${salon.street} — ${salon.city}/${salon.state}` +
+          `<div class="popup-directions">` +
+          `<a class="popup-directions-btn" href="${googleMapsUrl}" target="_blank" rel="noopener">Ir até o salão</a>` +
+          `</div>`,
+      )
+      .addTo(markersLayer)
+  })
 
   if (markers.length) {
     const bounds = L.featureGroup(markers).getBounds()

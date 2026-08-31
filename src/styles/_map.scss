@@ -41,6 +41,28 @@
   color: var(--text) !important;
 }
 
+.popup-directions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.popup-directions-btn {
+  flex: 1;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--accent-border);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--accent-light) !important;
+
+  &:hover {
+    background: var(--accent-bg);
+  }
+}
+
 .leaflet-bar a {
   background: var(--card-bg) !important;
   color: var(--text-h) !important;
