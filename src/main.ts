@@ -13,6 +13,7 @@ import { initRouter } from "./router";
 import { matchesSearch, buildSuggestionsHtml } from "./search";
 import { initServiceFilter } from "./serviceFilter";
 import { initRegistrationForm } from "./registration";
+import { localizeFormValidation } from "./utils";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 app.innerHTML = renderAppShell();
@@ -30,6 +31,7 @@ const pages: Record<string, HTMLElement> = {
 
 const contactForm = document.querySelector<HTMLFormElement>("#contact-form")!;
 contactForm.addEventListener("submit", (event) => event.preventDefault());
+localizeFormValidation(contactForm);
 
 const searchInput = document.querySelector<HTMLInputElement>("#search-input")!;
 const searchBtn = document.querySelector<HTMLButtonElement>("#search-btn")!;

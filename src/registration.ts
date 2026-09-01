@@ -4,6 +4,7 @@ import { geocodeAddress } from "./geocode";
 import { lookupCep } from "./cep";
 import { signIn, signUp, signOut, getCurrentUser } from "./auth";
 import { fetchOwnSalon, insertSalon, updateOwnSalon, uploadSalonPhotos } from "./salonsApi";
+import { localizeFormValidation } from "./utils";
 
 const MAX_PHOTOS = 10;
 const BRAZIL_CENTER: L.LatLngTuple = [-14.235, -51.9253];
@@ -74,6 +75,9 @@ export function initRegistrationForm(): void {
   const mapContainer = form.querySelector<HTMLElement>("#reg-map")!;
   const statusEl = form.querySelector<HTMLElement>("#reg-status")!;
   const submitBtn = form.querySelector<HTMLButtonElement>("#reg-submit")!;
+  const termsLink = form.querySelector<HTMLButtonElement>("#reg-terms-link")!;
+  const termsDialog = formView.querySelector<HTMLDialogElement>("#terms-dialog")!;
+  const termsClose = formView.querySelector<HTMLButtonElement>("#terms-close")!;
 
   let selectedFiles: File[] = [];
   let existingPhotos: string[] = [];
@@ -334,6 +338,12 @@ export function initRegistrationForm(): void {
     authStatus.textContent = "";
     await showAppropriateView();
   });
+
+  termsLink.addEventListener("click", () => termsDialog.showModal());
+  termsClose.addEventListener("click", () => termsDialog.close());
+
+  localizeFormValidation(form);
+  localizeFormValidation(authForm);
 
   cepInput.addEventListener("input", () => {
     const digits = cepInput.value.replace(/\D/g, "").slice(0, 8);

@@ -270,9 +270,86 @@ export function renderAppShell(): string {
           </div>
         </label>
         <div id="reg-photo-preview"></div>
+        <label class="form-field-checkbox">
+          <input id="reg-terms" type="checkbox" required />
+          <span>
+            Li e aceito os
+            <button type="button" id="reg-terms-link">Termos e Condições e a Política de Privacidade (LGPD)</button>
+          </span>
+        </label>
         <p id="reg-status"></p>
         <button type="submit" id="reg-submit" class="btn btn-whatsapp">Cadastrar salão</button>
       </form>
+
+      <dialog id="terms-dialog">
+        <h2>Termos e Condições e Política de Privacidade</h2>
+        <div class="terms-content">
+          <p>
+            Este documento estabelece as condições de uso da plataforma Nexa por parte de
+            salões, clínicas estéticas e barbearias ("Estabelecimento") e o tratamento de
+            dados pessoais e empresariais em conformidade com a Lei nº 13.709/2018
+            (Lei Geral de Proteção de Dados — LGPD).
+          </p>
+
+          <h3>1. Dados coletados</h3>
+          <p>
+            Ao cadastrar seu estabelecimento, você fornece dados como nome do salão, CNPJ,
+            endereço, telefone/WhatsApp, e-mail, Instagram, serviços oferecidos e fotos.
+            Esses dados podem incluir dados pessoais do responsável pelo cadastro (e-mail e
+            telefone de contato).
+          </p>
+
+          <h3>2. Finalidade do tratamento</h3>
+          <p>
+            Os dados informados são utilizados exclusivamente para: (a) exibir publicamente
+            o perfil do estabelecimento na plataforma Nexa, incluindo endereço, mapa,
+            serviços, fotos e canais de contato (WhatsApp e Instagram); (b) permitir que
+            clientes encontrem e entrem em contato com o estabelecimento; (c) comunicação da
+            Nexa com o responsável pelo cadastro sobre o status da conta e do anúncio.
+          </p>
+
+          <h3>3. Base legal</h3>
+          <p>
+            O tratamento dos dados ocorre com base no consentimento do titular, dado ao
+            marcar a opção de aceite neste cadastro, conforme art. 7º, inciso I, da LGPD.
+            Dados de identificação empresarial (CNPJ, endereço comercial) são tratados
+            também com base no legítimo interesse da plataforma em divulgar
+            estabelecimentos comerciais publicamente.
+          </p>
+
+          <h3>4. Compartilhamento</h3>
+          <p>
+            A Nexa não vende nem compartilha seus dados com terceiros para fins de
+            publicidade. As fotos e informações de contato cadastradas são exibidas
+            publicamente na plataforma, pois essa é a finalidade do serviço.
+          </p>
+
+          <h3>5. Direitos do titular</h3>
+          <p>
+            Conforme os arts. 17 a 22 da LGPD, você pode, a qualquer momento: confirmar a
+            existência de tratamento, acessar, corrigir ou solicitar a exclusão dos seus
+            dados, e revogar este consentimento. Para exercer esses direitos, edite seu
+            cadastro pela própria plataforma ou entre em contato pelo e-mail
+            contato@nexa.com.br.
+          </p>
+
+          <h3>6. Retenção</h3>
+          <p>
+            Os dados são mantidos enquanto o cadastro estiver ativo na plataforma. Ao
+            solicitar a exclusão da conta, os dados são removidos, ressalvado o prazo
+            necessário para cumprimento de obrigações legais.
+          </p>
+
+          <h3>7. Responsabilidade pelas informações</h3>
+          <p>
+            O Estabelecimento declara que as informações fornecidas (incluindo CNPJ,
+            endereço e fotos) são verdadeiras e que possui autorização para divulgá-las
+            publicamente, isentando a Nexa por inconsistências decorrentes de dados
+            incorretos informados no cadastro.
+          </p>
+        </div>
+        <button type="button" id="terms-close" class="btn btn-whatsapp">Fechar</button>
+      </dialog>
     </div>
   </section>
 
