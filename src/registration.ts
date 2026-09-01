@@ -4,7 +4,7 @@ import { geocodeAddress } from "./geocode";
 import { lookupCep } from "./cep";
 import { signIn, signUp, signOut, getCurrentUser } from "./auth";
 import { fetchOwnSalon, insertSalon, updateOwnSalon, uploadSalonPhotos } from "./salonsApi";
-import { localizeFormValidation } from "./utils";
+import { compressImage, localizeFormValidation } from "./utils";
 
 const MAX_PHOTOS = 10;
 const BRAZIL_CENTER: L.LatLngTuple = [-14.235, -51.9253];
@@ -405,14 +405,17 @@ export function initRegistrationForm(): void {
     }
   }
 
-  photosInput.addEventListener("change", () => {
+  photosInput.addEventListener("change", async () => {
     const chosenFiles = Array.from(photosInput.files ?? []);
     const remainingSlots =
       MAX_PHOTOS - existingPhotos.length - selectedFiles.length;
     const filesToAdd = chosenFiles.slice(0, Math.max(0, remainingSlots));
-
-    selectedFiles = [...selectedFiles, ...filesToAdd];
     photosInput.value = "";
+
+    statusEl.textContent = "Otimizando fotos...";
+    const compressed = await Promise.all(filesToAdd.map((file) => compressImage(file)));
+
+    selectedFiles = [...selectedFiles, ...compressed];
     renderPhotoPreview();
 
     statusEl.textContent =
