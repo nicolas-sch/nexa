@@ -15,7 +15,7 @@ export interface Salon {
   email?: string
   services: string[]
   rating: number // 0 to 5, half-points allowed
-  plan: SalonPlan // controls listing priority and the "Salão Top" badge; set by admin after payment, not owner-editable
+  plan: SalonPlan // controls listing priority and the "Salão Top" badge; owner-chosen at signup during the free launch period, admin-controlled once paid plans ship
 }
 
 export type SalonStatus = "pending" | "approved" | "rejected"
@@ -36,4 +36,5 @@ export interface SalonSubmission {
   email: string
   services: string[]
   photos: string[]
+  plan: SalonPlan
 }

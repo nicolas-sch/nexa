@@ -97,6 +97,7 @@ export async function insertSalon(
       email: submission.email,
       services: submission.services,
       photos: submission.photos,
+      plan: submission.plan,
     })
     .select("id")
     .single()

@@ -159,6 +159,41 @@ export function renderAppShell(): string {
       <p>
         Preencha os dados abaixo. Seu cadastro passa por uma análise antes de aparecer no site.
       </p>
+
+      <div id="plan-picker">
+        <button type="button" class="plan-card" data-plan="basic">
+          <span class="plan-free-tag">Grátis no lançamento</span>
+          <div class="plan-card-header">
+            <h3>Básico</h3>
+            <p class="plan-price">R$ 19,90<span>/mês</span></p>
+          </div>
+          <ul class="plan-benefits">
+            <li>Perfil completo do seu salão na Nexa</li>
+            <li>Botões diretos de WhatsApp e Instagram</li>
+            <li>Apareça nas buscas por cidade, estado e serviço</li>
+            <li>Até 10 fotos do salão</li>
+            <li>Suporte por e-mail</li>
+          </ul>
+        </button>
+        <button type="button" class="plan-card" data-plan="top">
+          <span class="plan-free-tag">Grátis no lançamento</span>
+          <div class="plan-card-header">
+            <h3>Top</h3>
+            <p class="plan-price">R$ 29,90<span>/mês</span></p>
+          </div>
+          <ul class="plan-benefits">
+            <li>Perfil completo do seu salão na Nexa</li>
+            <li>Botões diretos de WhatsApp e Instagram</li>
+            <li>Apareça nas buscas por cidade, estado e serviço</li>
+            <li>Até 10 fotos do salão</li>
+            <li>Suporte por e-mail</li>
+            <li class="plan-benefit-extra">Seu salão no topo das buscas</li>
+            <li class="plan-benefit-extra">Badge "Salão Top" no seu card</li>
+            <li class="plan-benefit-extra">Divulgação no Instagram oficial da Nexa</li>
+          </ul>
+        </button>
+      </div>
+
       <form id="registration-form">
         <label class="form-field">
           Nome do salão

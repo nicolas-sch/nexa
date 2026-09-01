@@ -1,5 +1,5 @@
 import L from "leaflet";
-import type { Salon, SalonSubmission } from "./types";
+import type { Salon, SalonPlan, SalonSubmission } from "./types";
 import { geocodeAddress } from "./geocode";
 import { lookupCep } from "./cep";
 import { signIn, signUp, signOut, getCurrentUser } from "./auth";
@@ -51,6 +51,9 @@ export function initRegistrationForm(): void {
   const logoutBtn = document.querySelector<HTMLButtonElement>(
     "#header-logout-btn",
   )!;
+  const planCards = Array.from(
+    formView.querySelectorAll<HTMLButtonElement>(".plan-card"),
+  );
 
   const nameInput = form.querySelector<HTMLInputElement>("#reg-name")!;
   const cnpjInput = form.querySelector<HTMLInputElement>("#reg-cnpj")!;
@@ -81,6 +84,22 @@ export function initRegistrationForm(): void {
   let authMode: "signin" | "signup" = "signin";
   let editingSalonId: string | null = null;
   let phoneDigits = "";
+  let selectedPlan: SalonPlan = "basic";
+
+  function setSelectedPlan(plan: SalonPlan) {
+    selectedPlan = plan;
+    planCards.forEach((card) =>
+      card.classList.toggle("selected", card.dataset.plan === plan),
+    );
+  }
+
+  planCards.forEach((card) => {
+    card.addEventListener("click", () =>
+      setSelectedPlan(card.dataset.plan as SalonPlan),
+    );
+  });
+
+  setSelectedPlan("basic");
 
   function formatPhoneDisplay(digits: string): string {
     if (!digits) return "";
@@ -193,6 +212,7 @@ export function initRegistrationForm(): void {
     pickedLng = null;
     editingSalonId = null;
     phoneDigits = "";
+    setSelectedPlan("basic");
     statusEl.textContent = "";
   }
 
@@ -201,6 +221,7 @@ export function initRegistrationForm(): void {
     nameInput.value = salon.name;
     cnpjInput.value = salon.cnpj ?? "";
     cepInput.value = salon.cep ?? "";
+    setSelectedPlan(salon.plan);
 
     const parsed = parseStoredStreet(salon.street);
     streetInput.value = parsed.street;
@@ -427,6 +448,7 @@ export function initRegistrationForm(): void {
         email: emailInput.value.trim(),
         services,
         photos,
+        plan: selectedPlan,
       };
 
       if (editingSalonId) {
